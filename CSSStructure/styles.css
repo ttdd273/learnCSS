@@ -1,0 +1,15 @@
+/* Create your test CSS here
+
+p {
+  color: red;
+} */
+
+body {
+  background-color: pink;
+}
+
+@media (min-width: 30em) {
+  body {
+    background-color: blue;
+  }
+}
