@@ -68,7 +68,7 @@ There are three ways to apply CSS to HTML:
   - However, for sites with more than one page, it's not a good idea to use internal styling because you will need internal styling for every web page.
 - Inline styles
   - CSS declaratons that affect a single element
-  - Contained within a `style` attribute
+  - Contained within a `style` attributev
   - **Avoid using CSS in this way, when possible.**
   - Least efficient implementation of CSS for maintenance
   - There are few circumstances where this is common:
@@ -229,3 +229,102 @@ body {
 - Browsers will ignore white space inside CSS, its value is in improving readability
 - Each declaration (and rule start/end) has its own line. This is arguably a good way to write CSS.
 - **Property names never have white spaces**
+
+## How CSS works?
+
+We will consider how the browser takes CSS and HTML and turns it into a webpage.
+
+### How does CSS actually work?
+
+- The browser must combine the document's content with its styling information
+
+Below is a very simplified version of what actually happens in the background:
+
+1. The browser loads HTML (e.g. receives from the network)
+2. Converts the HTML into a DOM (Document Object Model). The DOM represents the document in the computer's memory.
+3. The browser fetches most of the resources that are linked to by the HTML document, such as embedded images, videos, and even linked CSS, but JavaScript is handled a bit later.
+4. The browser parses the fetched CSS, and sorts the different rules by their selector types into different "buckets", e.g. element, class, ID, and so on. Based on the selectors it finds, it works out which rules should be applied to which nodes in the DOM, and attaches style to them as required (this intermediate step is called a render tree).
+5. The render tree is laid out in the structure it should appear in after the rules have been applied to it.
+6. The visual display of the page is shown on the screen (this stage is called painting).
+
+![Rendering](/assets/rendering.png)
+
+### About the DOM
+
+- DOM has a tree like structure. Each element, attribute, and piece of text in the markup language becomes a DOM node in the tree structure. The nodes are defined by their relationship to other DOM nodes. Some elements are parents of child nodes, and child nodes have siblings.
+- The DOM is where your CSS and the document's content meet up.
+- When you start working with browser DevTools you will be navigating the DOM as you select items in order to see which rules apply.
+
+### A real DOM representation
+
+- This is an example that converts HTML to a DOM representation
+
+```
+<p>
+  Let's use:
+  <span>Cascading</span>
+  <span>Style</span>
+  <span>Sheets</span>
+</p>
+```
+
+- In the DOM, the node corresponding to `<p>` is the parent, and the children are a text node and three nodes corresponding to `<span>` element
+
+```
+P
+├─ "Let's use:"
+├─ SPAN
+|  └─ "Cascading"
+├─ SPAN
+|  └─ "Style"
+└─ SPAN
+    └─ "Sheets"
+```
+
+### Applying CSS to the DOM
+
+- Looking at the same HTML as above, and we want to apply the following CSS to the document
+
+```
+span {
+  border: 1px solid black;
+  background-color: lime;
+}
+```
+
+- The browser parses the HTML and creates a DOM from it, then it parses the CSS
+- Since the only rule available in the CSS has a span selector, the browser sorts the CSS very quickly! It applies that rule to each one of the three <span>s, then paints the final visual representation to the screen
+
+### What happens if a browser encounters CSS it doesn't understand?
+
+- The answer is that it does nothing and simply moves onto the next declaration
+- Similarly, if a browser encounters a selector that it doesn't understand, it will just ignore the whole rule and move on to the next one.
+- In the following example, the word color is spelled with British spelling, but only that specific line will marked as invalid
+
+```
+p {
+  font-weight: bold;
+  colour: blue; /* incorrect spelling of the color property */
+  font-size: 200%;
+}
+```
+
+- This behavior is very useful. It means that you can use new CSS as an enhancement, knowing that no error will occur if it is not understood — the browser will either get the new feature or not. This enables basic fallback styling.
+
+- This is a good example with `calc()` function, which some browsers do not understand, and this works particularly well when you want to use a value that is quite new and not supported everywhere.
+- For example, some older browsers do not support calc() as a value. I might give a fallback width for a box in pixels, then go on to give a width with a calc() value of 100% - 50px. Old browsers will use the pixel version, ignoring the line about calc() as they don't understand it. New browsers will interpret the line using pixels, but then override it with the line using calc() as that line appears later in the cascade.
+
+```
+.box {
+  width: 500px;
+  width: calc(100% - 50px);
+}
+```
+
+### Assessment: Styling a Biography Page
+
+-Make the level one heading pink, using the CSS color keyword hotpink.
+-Give the heading a 10px dotted border-bottom which uses the CSS color keyword purple.
+-Make the level 2 heading italic.
+-Give the ul used for the contact details a background-color of #eeeeee, and a 5px solid purple border. Use some padding to push the content away from the border.
+-Make the links green on hover.
