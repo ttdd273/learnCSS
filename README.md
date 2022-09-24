@@ -328,3 +328,294 @@ p {
 -Make the level 2 heading italic.
 -Give the ul used for the contact details a background-color of #eeeeee, and a 5px solid purple border. Use some padding to push the content away from the border.
 -Make the links green on hover.
+
+# CSS Building Blocks
+
+We will look at cacscade and inheritance, all the selector types that are available, units, sizing, styling backgrounds and borders, debugging, and more.
+
+## Cascade and Inheritance
+
+This controls how CSS is applied to HTML and how conflicts between style declarations are resolved.
+
+### Conflicting Rules
+
+- CSS stands for Cascading Style Sheets, and cascading is really important to understand
+- Oftentimes when CSS is not working, it's probably because you've written a rule that overwrote one of the rules
+- **Casacde** and **specificity** are mechanisms that control which rule applies when there is such a conflict. The rule that's styling your element may not be the one you expect, so you need to understand how these mechanisms work.
+- Also important is the concept of **inheritance**, where elements might take the default values from its parent, but some other elements might not
+
+### Cascade
+
+- Stylesheets **cascade** — at a very simple level, this means that the origin, the cascade layer, and the order of CSS rules matter.
+- As an example:
+
+```
+<h1>This is my heading.</h1>
+```
+
+The CSS are:
+
+```
+h1 {
+    color: red;
+}
+h1 {
+    color: blue;
+}
+
+```
+
+- We have two rules that both apply to the `h1` element, but it ends up being colored blue, because both rules are from the same source, have an identical element selector, and therefore carries the same specificity, but the last one in the source order wins.
+
+### Specificity
+
+- **Specificity** is the algorithm that the browser uses to decide which property value is applied to an element.
+- If multiple style blocks have different selectors that configure the same property with different values and target the same values, specificity decides the property value that gets applied to the element
+- Basically a measure of how the selector's selection will be :
+  - An element selector is less specific; it will select all elements of that type that appear on a page, so it has less weight.
+  - A class selector is more specific; it will select only the elements on a page that have a specific class attribute value, so it has more weight.
+- As an example:
+
+```
+.main-heading {
+    color: red;
+}
+
+h1 {
+    color: blue;
+}
+```
+
+```
+<h1 class="main-heading">This is my heading.</h1>
+```
+
+- The `h1` will be colored red because the class selector is more specific than an element selector, despite the element selector being lower than the class selector
+
+### Inheritance
+
+- This is important to understand because some CSS property values set on parent elements are inherited by their child elements, and some aren't.
+- For example, if you set `color` attribute on `font-family` of an element, every element inside it will also be styled with that color and font, unless you've applied different color and font values directly to them
+- Ex:
+
+```
+body {
+    color: blue;
+}
+
+span {
+    color: black;
+}
+```
+
+```
+<p>As the body has been set to have a color of blue this is inherited through the descendants.</p>
+<p>We can change the color by targeting the element with a selector, such as this <span>span</span>.</p>
+```
+
+- Some values don't inherit, such as `width`. If you set `width` to 50%, all of its descendants don't get a width of 50%
+- You will need to check each property's `Formal Definition` to check if it's inherited or not
+
+### Understanding how the concepts work together
+
+- You can use the browser's web tools to inspect a page's specificity, cascade, and more
+- Firefox's DevTools are pretty similar to the ones in Chrome, the HTML is basically the DOM structure
+- The rules panel is where you see these inheritance rules, etc.
+- Cascade works by giving every selector and property a weight, and the weight in combination is what we call specificity
+- The first is usually inline styles, which is applied directly to the element
+- Then we have the selector block, which has less weight
+- If there's a conflict, the one higher up on the list will override the ones lower in the list
+- The `id` selector is also more specific than `class` selectors, so they are higher up in the selector
+- There are also inherited styles a little lower
+  - Main appears before HTML
+  - These inherited values will be in the order of distance
+- We can also see the browser styles that can be applied, go to settings to enable that, aka _user agent_ styles
+- You can also turn on different states like hover, or add additional classes and add it through there
+- There's also the computed tab
+  - Just the properties that are applied, and for each property, where it came from, and what they are set to
+
+### Understanding inheritance
+
+- We will analyze the following example, the `color` property is an inherited property, so it is applied to direct children as well as indirect children
+- Properties like `width`, `margin`, `padding`, and `border` are not inherited, and the reason is because if we increase the border for one element, then every single list and list item will also gain a border, which is definitely not intended
+
+```
+.main {
+    color: rebeccapurple;
+    border: 2px solid #ccc;
+    padding: 1em;
+}
+
+.special {
+    color: black;
+    font-weight: bold;
+}
+```
+
+```
+<ul class="main">
+    <li>Item One</li>
+    <li>Item Two
+        <ul>
+            <li>2.1</li>
+            <li>2.2</li>
+        </ul>
+    </li>
+    <li>Item Three
+        <ul class="special">
+            <li>3.1
+                <ul>
+                    <li>3.1.1</li>
+                    <li>3.1.2</li>
+                </ul>
+            </li>
+            <li>3.2</li>
+        </ul>
+    </li>
+</ul>
+
+```
+
+#### Controlling inheritance
+
+- `inherit`: Sets the property value applied to a selected element to be the same as that of its parent element. Effectively, this "turns on inheritance".
+- `initial`: Sets the property value applied to a selected element to the initial value of that property.
+- `revert`: Resets the property value applied to a selected element to the browser's default styling rather than the defaults applied to that property. This value acts like unset in many cases.
+- `revert-layer`: Resets the property value applied to a selected element to the value established in a previous cascade layer.
+- `unset`: Resets the property to its natural value, which means that if the property is naturally inherited it acts like inherit, otherwise it acts like initial.
+
+#### Resetting all property values
+
+- The CSS shorthand property `all` can be used to apply one of these inheritance values to (almost) all properties at once. Its value can be any one of the inheritance values (`inherit`, `initial`, `revert`, `revert-layer`, or `unset`). It's a convenient way to undo changes made to styles so that you can get back to a known starting point before beginning new changes.
+
+### Understanding the cascade
+
+- We will now look at how cascade defines which CSS rules apply when more than one style block apply the same propety, but with different values, to the same element.
+- There are three elements to soncider
+  1. Source Order
+  2. Specificity
+  3. Importance
+
+#### Source Order
+
+- If you have more than one rule, all of which have exactly the same weight, then the one that comes last in the CSS will win.
+- You can think of this as the rule that is nearer the element itself overwrites the earlier ones until the last one wins and gets to style the element.
+- Source order only matters when the specificty weight of the rules is the same
+
+#### Specificity
+
+- You will often run into a situation where you know that a rule comes later in the stylesheet, but an earlier, conflicting rule is applied. This happens because the earlier rule has a **higher specificity** — it is more specific, and therefore, is being chosen by the browser as the one that should style the element.
+- Although we are thinking about selectors and the rules that are applied, it isn't the entire rule that's overwritten, only the properties that are declared in multiple places.
+- This behavior helps to avoid repetition in your CSS
+  - A common practice is to definte generic styles for the basic elements, and then create classes for those that are different.
+- As an example, we will `h1` with a generic styling, and then style the others with classes selectors
+
+```
+h2 {
+    font-size: 2em;
+    color: #000;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.small {
+    font-size: 1em;
+}
+
+.bright {
+    color: rebeccapurple;
+}
+```
+
+```
+<h2>Heading with no class</h2>
+<h2 class="small">Heading with class of small</h2>
+<h2 class="bright">Heading with class of bright</h2>
+```
+
+- How does a browser calculate specificity. Essentially, a value in points is awarded to different types of selectors, and adding these up gives you the weight of that particular selector, which can then be assessed against other potential matches.
+- The amount of sepcificity a selector has is measured using three different values (or components), which can thought of as ID, CLASS, and ELEMENT columns in the hundreds, tens, and ones place:
+  - **Identifiers**: Score one in this column for each ID selector contained inside the overall selector.
+  - **Classes**: Score one in this column for each class selector, attribute selector, or pseudo-class contained inside the overall selector.
+  - **Elements**: Score one in this column for each element selector or pseudo-element contained inside the overall selector.
+
+| Selector               | Identifiers | Classes | Elements | Total Specificity |
+| ---------------------- | ----------- | ------- | -------- | ----------------- |
+| `h1 + p::first-letter` | 0           | 0       | 1        | 0-0-1             |
+
+#### Inline styles
+
+- Inlines styles take precedence over all normal styles, no matter the specificity. Their specificity can be continued as 1-0-0-0.
+
+#### !important
+
+- There's a special piece of CSS that you can use to overrule all of the above calculations, even the inline styles, the `!important` flag.
+- You should be careful when using it, it is used to make an individual property and value pair the most specific rule, thereby overriding the normal rules of the cascade.
+- The only way to override an important declaration is to include another important declaration with the _same specificity_ later in the source order, or one with higher specificity.
+- One use case is when you're working on a CMS where you can't edit the CSS modules.
+
+### The effect of CSS location
+
+- It's possible to set custom stylesheets to override the developer's styles.
+- It's also possible to declare developer styles in casacde layers: you can make non-layered styles override styles declared in layers or you can make styles declared in later layers override styles from earlier declared layers.
+- As a developer, you may not be able to edit a third-party stylesheet, but you can import the external stylesheet into a cascade layer so that all your styles easily override the imported styles without worrying about third-party selector specificity.
+
+#### Order of overriding declarations
+
+Conflicting declarations will be applied in the following order, which later ones overriding earlier ones:
+
+1. Declarations in user agent style sheets (e.g., the browser's default styles, used when no other styling is set).
+2. Normal declarations in user style sheets (custom styles set by a user).
+3. Normal declarations in author style sheets (these are the styles set by us, the web developers).
+4. Important declarations in author style sheets.
+5. Important declarations in user style sheets.
+6. Important declarations in user agent style sheets.
+
+- Note that the order of precedence is inverted for styles flagged with `!important`
+
+#### Order of cascade layers
+
+- When you declare CSS in cascade layers, the order of precedence is determined by the order in which the layers are declared.
+- CSS styles declared outside of any layer are combined together, in the order in which those styles are declared, into an unnamed layer, as if it were the last declared layer.
+- With competing normal styles, layer layers take precedence over earlier defined layers, but `!important` flag reverses the order
+- Example:
+
+```
+@layer firstLayer, secondLayer;
+
+p { /* 0-0-1 */
+  background-color: red;
+  color: grey !important;
+  border: 5px inset purple;
+}
+p#addSpecificity { /* 1-0-1 */
+  border-style: solid !important;
+}
+
+@layer firstLayer {
+  #addSpecificity { /* 1-0-0 */
+    background-color: blue;
+    color: white !important;
+    border-width: 5px;
+    border-style: dashed !important;
+  }
+}
+
+@layer secondLayer {
+  p#addSpecificity { /* 1-0-1 */
+    background-color: green;
+    color: orange !important;
+    border-width: 10px;
+    border-style: dotted !important;
+  }
+}
+```
+
+```
+<p id="addSpecificity">
+  A paragraph with a border and background
+</p>
+```
+
+- In here, two layers are defined, `firstLayer` and `secondLayer`
+- Even though secondLayer is the highest, no properties from that declarations are used, because non-layered normal styles take precedence over layered normal styles, no matter the specificity, and important layered styles take precedence over important styles declared in layer layers.
+-

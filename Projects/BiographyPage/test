@@ -1,0 +1,16 @@
+import numpy as np
+
+currentWeight = np.array([2, -3, -2, 5, -3])
+
+newEx = np.array([0, 2, 0, 0, 0])
+
+
+count = 0
+while currentWeight @ newEx <= 0:
+    print(currentWeight, currentWeight @ newEx)
+    currentWeight += newEx
+    print(currentWeight)
+    print("---------------")
+    count += 1
+
+print(count)
