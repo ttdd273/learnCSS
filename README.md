@@ -1142,3 +1142,263 @@ span {
   - `repeat-x` — repeat horizontally.
   - `repeat-y` — repeat vertically.
   - `repeat` — the default; repeat in both directions.
+
+### Sizing the background image
+
+- The background image might sometimes be too large and as a result, the image will get cropped as the background. In this case, we can ues `background-size` property, which can take length of percentage values.
+- You can also use keywords:
+  - `cover`: the browser will make the image just large enough so that it completely covers the box area while retaining its aspect ratio. In this case, part of the image is likely to end up outside the box.
+  - `contain`: the browser will make the image the right size to fit inside the box. In this case, you may end up gaps on either side or on the top and bottom of the image, if the aspect ratio of the image is different from that of the box.
+
+### Positioning the background image
+
+- The `background-position` property allows you to choose the position in which the background image appears on the box it is applied to. This uses a coordinate system in which the top-left-hand corner of the box is `(0,0)`, and the box is positioned along the horizontal (`x`) and vertical (`y`) axes.
+- The default background-position value is `(0,0)`.
+- The most common `background-position` values take two individual values — a horizontal value followed by a vertical value.
+- You can use keywords such as `top` and `right`, or length and percentages to achieve the same thing, and you can also mix them up
+
+```
+.box {
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: 20px top;
+}
+```
+
+- You can also use a 4-value syntax in order to indicate a distance from certain edges of the box: the length unit is an offset from the value that precedes it.
+
+```
+.box {
+  background-image: url(star.png);
+  background-repeat: no-repeat;
+  background-position: top 20px right 10px;
+}
+```
+
+- `background-position` is a shorthand for `background-position-x` and `background-position-y`, which allow you to set the different axis position values individually.
+
+### Gradient backgrounds
+
+- A gradient — when used for a background — acts just like an image and is also set by using the `background-image` property.
+- There are many CSS gradient generators that we can use to generate the gradeent
+
+### Multiple background images
+
+- It is also possible to have multiple background images — you specify multiple `background-image` values in a single property value, separating each one with a comma.
+- When you do this you may end up with background images overlapping each other. The backgrounds will layer with the last listed background image at the bottom of the stack, and each previous image stacking on top of the one that follows it in the code.
+- The other `background-*` properties can also have comma-separated values in the same way as `background-image`:
+
+```
+background-image: url(image1.png), url(image2.png), url(image3.png),
+  url(image4.png);
+background-repeat: no-repeat, repeat-x, repeat;
+background-position: 10px 20px, top right;
+```
+
+- Each value of the different properties will match up to the values in the same position in the other properties. Above, for example, `image1`'s `background-repeat` value will be `no-repeat`. However, what happens when different properties have different numbers of values? The answer is that the smaller numbers of values will cycle — in the above example there are four background images but only two `background-position` values. The first two position values will be applied to the first two images, then they will cycle back around again — `image3` will be given the first position value, and `image4` will be given the second position value.
+
+### Background attachment
+
+- Another option we have available for backgrounds is specifying how they scroll when the content scrolls. This is controlled using the `background-attachment` property, which can take the following values:
+  - `scroll`: causes the element's background to scroll when the page is scrolled. If the element content is scrolled, the background does not move. In effect, the background is fixed to the same position on the page, so it scrolls as the page scrolls.
+  - `fixed`: causes an element's background to be fixed to the viewport so that it doesn't scroll when the page or element content is scrolled. It will always remain in the same position on the screen.
+  - `local`: fixes the background to the element it is set on, so when you scroll the element, the background scrolls with it.
+- A good example of this: [background-attachment](https://mdn.github.io/learning-area/css/styling-boxes/backgrounds/background-attachment.html)
+
+### Using the background shorthand property
+
+- You will often see backgrounds specified using the `background` property. This shorthand lets you set all of the different properties at once.
+- If using multiple backgrounds, you need to specify all of the properties for the first background, then add your next background after a comma. In the example below we have a gradient with a size and position, then an image background with `no-repeat` and a position, then a color.
+- There are a few rules that need to be followed when writing background image shorthand values, for example:
+  - A `background-color` may only be specified after the final comma.
+  - The value of `background-size` may only be included immediately after `background-position`, separated with the '/' character, like this: `center/80%`.
+
+```
+.box {
+  background:
+    linear-gradient(105deg, rgba(255,255,255,.2) 39%, rgba(51,56,57,1) 96%) center center / 400px 200px no-repeat,
+url(big-star.png) center no-repeat,
+    rebeccapurple;
+}
+```
+
+```
+<div class="box"></div>
+```
+
+### Accessibility considerations with backgrounds
+
+- When placing text on top of a background image or color, you should take care that you have enough contrast for the text to be legible for your visitors. If specifying an image, and if text will be placed on top of that image, you should also specify a `background-color` that will allow the text to be legible if the image does not load.
+- Screen readers cannot parse background images; therefore, they should be purely decoration. Any important content should be part of the HTML page and not contained in a background.
+
+## Borders
+
+- When learning about the Box Model, we discovered how borders affect the size of our box. In this lesson we will look at how to use borders creatively. Typically when we add borders to an element with CSS we use a shorthand property that sets the color, width, and style of the border in one line of CSS.
+- We can set a border for all four sides of a box with `border`:
+
+```
+.box {
+  border: 1px solid black;
+}
+```
+
+- Or we can target one edge of the box, for example:
+
+```
+.box {
+  border-top: 1px solid black;
+}
+```
+
+- The individual properties for these shorthands would be:
+
+```
+.box {
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+}
+```
+
+- And the longhands:
+
+```
+.box {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: black;
+}
+```
+
+### Rounded corners
+
+- Rounding corners on a box is achieved by using the border-radius property and associated longhands which relate to each corner of the box. Two lengths or percentages may be used as a value, the first value defining the horizontal radius, and the second the vertical radius. In a lot of cases, you will only pass in one value, which will be used for both.
+- For example, to make all four corners of a box have a 10px radius:
+
+```
+.box {
+  border-radius: 10px;
+}
+```
+
+- Or to make the top right corner have a horizontal radius of 1em, and a vertical radius of 10%:
+
+```
+.box {
+  border-top-right-radius: 1em 10%;
+}
+```
+
+# Handling different text directions
+
+- Many of the properties and values that we have encountered so far in our CSS learning have been tied to the physical dimensions of our screen. We create borders on the top, right, bottom, and left of a box, for example. These physical dimensions map very neatly to content that is viewed horizontally, and by default the web tends to support left-to-right languages (e.g. English or French) better than right-to-left languages (such as Arabic).
+- In recent years however, CSS has evolved in order to better support different directionality of content, including right-to-left but also top-to-bottom content (such as Japanese) — these different directionalities are called **writing modes**.
+
+## What are writing modes?
+
+- A writing mode in CSS refers to whether the text is running horizontally or vertically. The `writing-mode` property lets us switch from one writing mode to another. You don't need to be working in a language which uses a vertical writing mode to want to do this — you could also change the writing mode of parts of your layout for creative purposes.
+- Here's an example of text running vertically:
+
+```
+h1 {
+  writing-mode: vertical-rl;
+}
+```
+
+```
+<h1>Play with writing modes</h1>
+```
+
+- The three possible values for writing modes are:
+  - `horizontal-tb`: Top-to-bottom block flow direction. Sentences run horizontally.
+  - `vertical-rl`: Right-to-left block flow direction. Sentences run vertically.
+  - `vertical-lr`: Left-to-right block flow direction. Sentences run vertically.
+
+## Writing modes and block and inline layout
+
+- Block and inline styles are tied to the writing mode of the document, and not the physical screen. Blocks are only displayed from the top to the bottom of the page if you are using a writing mode that displays text horizontally, such as English.
+- When we switch the writing mode, we are changing which direction is block and which is inline. In a `horizontal-tb` writing mode the block direction runs from top to bottom; in a `vertical-rl` writing mode the block direction runs right-to-left horizontally. So the **block dimension** is always the direction blocks are displayed on the page in the writing mode in use. The **inline dimension** is always the direction a sentence flows.
+- This figure shows the two dimensions in a horizontal writing mode:
+
+![horizontal](./assets/horizontal-tb.png)
+
+- This figure shows the two dimensions in a vertical writing mode:
+
+![vertical](./assets/vertical.png)
+
+### Direction
+
+- In addition to writing mode we also have text direction. As mentioned above, some languages such as Arabic are written horizontally, but right-to-left. This is not something you are likely to use in a creative sense — if you want to line something up on the right there are other ways to do so — however it is important to understand this as part of the nature of CSS. The web is not just for languages that are displayed left-to-right!
+- Due to the fact that writing mode and direction of text can change, newer CSS layout methods do not refer to left and right, and top and bottom. Instead they will talk about start and end along with this idea of inline and block. Don't worry too much about that right now, but keep these ideas in mind as you start to look at layout; you will find it really helpful in your understanding of CSS.
+
+## Logical properties and values
+
+- The reason to talk about writing modes and direction at this point in your learning is that we have already looked at a lot of properties that are tied to the physical dimensions of the screen, and these make more sense when in a horizontal writing mode.
+- In the following example, you will see that the vertical width is not wide enough and causes the text to overflow:
+
+```
+.box {
+  width: 150px;
+}
+
+.horizontal {
+  writing-mode: horizontal-tb;
+}
+
+.vertical {
+  writing-mode: vertical-rl;
+}
+```
+
+```
+<div class="wrapper">
+  <div class="box horizontal">
+    <h2>Heading</h2>
+    <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+    <p>These boxes have a width.</p>
+  </div>
+  <div class="box vertical">
+    <h2>Heading</h2>
+    <p>A paragraph. Demonstrating Writing Modes in CSS.</p>
+    <p>These boxes have a width.</p>
+  </div>
+</div>
+```
+
+- What we really want in this scenario is to essentially swap height with width in accordance to the writing mode. When we're in a vertical writing mode we want the box to expand in the block dimension just like it does in the horizontal mode.
+- To make this easier, CSS has recently developed a set of mapped properties. These essentially replace physical properties — things like `width` and `height` — with logical, or flow relative versions.
+- The property mapped to width when in a horizontal writing mode is called `inline-size` — it refers to the size in the inline dimension. The property for height is named `block-size` and is the size in the block dimension. You can see how this works in the example below where we have replaced `width` with `inline-size`:
+
+```
+.box {
+  inline-size: 150px;
+}
+
+.horizontal {
+  writing-mode: horizontal-tb;
+}
+
+.vertical {
+  writing-mode: vertical-rl;
+}
+```
+
+### Logical margin, border, and padding properties
+
+- In the same way that we have mappings for width and height there are mappings for these properties.
+- The margin-top property is mapped to `margin-block-start` — this will always refer to the margin at the start of the block dimension.
+- The `padding-left` property maps to `padding-inline-start`, the padding that is applied to the start of the inline direction. This will be where sentences start in that writing mode. The `border-bottom` property maps to `border-block-end`, which is the border at the end of the block dimension.
+- You can see a comparison between physical and logical properties below:
+  - Specifically: **If you change the writing mode of the boxes by switching the `writing-mode` property on `.box` to `vertical-rl`, you will see how the physical properties stay tied to their physical direction, whereas the logical properties switch with the writing mode.**
+
+### Logical values
+
+- We have so far looked at logical property names. There are also some properties that take physical values of `top`, `right`, `bottom`, and `left`. These values also have mappings, to logical values — `block-start`, `inline-end`, `block-end`, and `inline-start`.
+
+### Should you use physical or logical values?
+
+- The logical properties and values are newer than their physical equivalents, and therefore have only recently been implemented in browsers. You can check any property page on MDN to see how far back the browser support goes. If you are not using multiple writing modes then for now you might prefer to use the physical versions. However, ultimately we expect that people will transition to the logical versions for most things, as they make a lot of sense once you start also dealing with layout methods such as flexbox and grid.
+
+# Overflowing content
+
+- Overflow is what happens when there is too much content to fit in a container.

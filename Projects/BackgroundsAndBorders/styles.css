@@ -1,0 +1,26 @@
+/* Task 1 */
+/* .box {
+    background-image: url("balloons.jpg");
+    background-size: cover;
+    border: 5px solid black;
+    border-radius: 10px;
+  }
+  
+  h2 {
+    background-color: rgba(0,0,0, .5);
+    color: white;
+  }
+       */
+
+/* Task 2 */
+/* .box {
+  border: 5px solid lightblue;
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 40px;
+}
+
+h2 {
+  background: url(star.png) no-repeat left center,
+    url(star.png) repeat-y right center;
+  text-align: center;
+} */
