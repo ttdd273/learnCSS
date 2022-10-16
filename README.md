@@ -1402,3 +1402,832 @@ h1 {
 # Overflowing content
 
 - Overflow is what happens when there is too much content to fit in a container.
+
+## What is overflow?
+
+- Everything in CSS is a box. You can constrain the size of these boxes by assigning values of `width` and `height` (or `inline-size` and `block-size`). Overflow happens when there is too much content to fit in a box. CSS provides various tools to manage overflow. As you go further with CSS layout and writing CSS, you will encounter more overflow situations.
+
+## CSS tries to avoid "data loss"
+
+- The first example is a box that has been restricted by setting a `height`. Then we add content that exceeds the allocated space. The content overflows the box and falls into the paragraph below.
+
+```
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+}
+```
+
+```
+<div class="box">This box has a height and a width. This means that if there is too much content to be displayed within the assigned height, there will be an overflow situation. If overflow is set to hidden then any overflow will not be visible.</div>
+
+<p>This content is outside of the box.</p>
+```
+
+- This is an example of a word in the box, the box has been made too small for the word so it breaks out of the box:
+
+```
+.word {
+  border: 1px solid #333333;
+  width: 100px;
+  font-size: 250%;
+}
+```
+
+```
+<div class="word">Overflow</div>
+```
+
+- You might wonder why CSS works in such a messy way, displaying content outside of its intended container. Why not hide overflowing content? Why not scale the size of the container to fit all the content?
+- Wherever possible, CSS does not hide content. This would cause data loss. The problem with data loss is that you might not notice. Website visitors may not notice. If the submit button on a form disappears and no one can complete the form, this could be a big problem! Instead, CSS overflows in visible ways. You are more likely to see there is a problem. At worst, a site visitor will let you know that content is overlapping.
+- If you restrict a box with a `width` or a `height`, CSS trusts you to know what you are doing. CSS assumes that you are managing the potential for overflow. In general, restricting the block dimension is problematic when the box contains text. There may be more text than you expected when designing the site, or the text may be larger (for example, if the user has increased their font size).
+- There are ways to work with different units to have ways that are less prone to overflow. However, if you need a fixed size, you can also control how the overflow behaves.
+
+## The overflow property
+
+- The `overflow` property is how you take control of an element's overflow. It is the way you instruct the browser how it should behave. The default value of overflow is `visible`. With this default, we can see content when it overflows.
+- To crop content when it overflows, you can set overflow: hidden. This does exactly what it says: it hides overflow. Beware that this can make some content invisible. You should only do this if hiding content won't cause problems.
+- In here, you'll see that the text is no longer outside of the box:
+
+```
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+  overflow: hidden;
+}
+```
+
+```
+<div class="box">This box has a height and a width. This means that if there is too much content to be displayed within the assigned height, there will be an overflow situation. If overflow is set to hidden then any overflow will not be visible.</div>
+
+<p>This content is outside of the box.</p>
+```
+
+- Instead, perhaps you would like to add scrollbars when content overflows? Using `overflow: scroll`, browsers with visible scrollbars will always display them—even if there is not enough content to overflow. This offers the advantage of keeping the layout consistent, instead of scrollbars appearing or disappearing, depending upon the amount of content in the container.
+
+- You can also control which axis to which you want the scrollbars:
+
+```
+.box {
+  border: 1px solid #333333;
+  width: 200px;
+  height: 100px;
+  overflow-y: scroll;
+}
+```
+
+```
+<div class="box">This box has a height and a width. This means that if there is too much content to be displayed within the assigned height, there will be an overflow situation. If overflow is set to hidden then any overflow will not be visible.</div>
+
+<p>This content is outside of the box.</p>
+```
+
+- You can also scroll on the x axis using `overflow-x`, although this is not a recommended way to accommodate long words! If you have a long word in a small box, you might consider using the `word-break` or `overflow-wrap` properties.
+- You can specify x and y scrolling using the `overflow` property, passing two values. If two keywords are specified, the first applies to `overflow-x` and the second applies to `overflow-y`.
+
+## Overflow establishes a Block Formatting Context
+
+- When you use a value of overflow such as `scroll` or `auto`, you create a **Block Formatting Context** (BFC). The content of the box that you have changed the value of `overflow` for acquires a self-contained layout.
+- Content outside the container cannot poke into the container, and nothing can poke out of that container into the surrounding layout. This enables scrolling behavior, as all box content needs to be contained and not overlap, in order to create a consistent scrolling experience.
+
+## Unwanted overflow in web design
+
+- Modern layout methods (described in CSS layout) manage overflow. They largely work without assumptions or dependencies for how much content there will be on a web page.
+- This has not always been the norm. In the past, some sites were built with fixed-height containers to align bottoms of boxes. These boxes may otherwise have no relationship to each other. This was fragile. In a legacy application, you may encounter a box where content is overlaying other content on the page. Now you can recognize that this happens with overflow. Ideally, you will refactor the layout to not rely on fixed-height containers.
+
+# CSS values and units
+
+- Every property used in CSS has a value type defining the set of values that are allowed for that property. Taking a look at any property page on MDN will help you understand the values associated with a value type that are valid for any particular property.
+
+## What is a CSS value?
+
+- In CSS specifications and on the property pages here on MDN you will be able to spot value types as they will be surrounded by angle brackets, such as `<color>` or `<length>`.
+- When you see the value type `<color>` as valid for a particular property, that means you can use any valid color as a value for that property, as listed on the `<color>` reference page.
+- We can also define ou rown color with the `rgb()` function:
+
+```
+h1 {
+  color: black;
+  background-color: rgb(197, 93, 161);
+}
+```
+
+- A value type in CSS is a way to define a collection of allowable values. This means that if you see `<color>` as valid you don't need to wonder which of the different types of color value can be used — keywords, hex values, `rgb()` functions, etc. You can use any available `<color>` values, assuming they are supported by your browser. The page on MDN for each value will give you information about browser support. For example, if you look at the page for `<color>` you will see that the browser compatibility section lists different types of color values and support for them.
+
+## Numbers, length, and percentages
+
+- There are various numeric value types that you might find yourself using in CSS. The following are all classed as numeric:
+  - `<integer>`: An `<integer>` is a whole number such as 1024 or -55.
+  - `<number>`: A `<number>` represents a decimal number — it may or may not have a decimal point with a fractional component. For example, 0.255, 128, or -1.2.
+  - `<dimension>`: A `<dimension>` is a `<number>` with a unit attached to it. For example, 45deg, 5s, or 10px. `<dimension>` is an umbrella category that includes the `<length>`, `<angle>`, `<time>`, and `<resolution>` types.
+  - `<percentage>`: A `<percentage>` represents a fraction of some other value. For example, 50%. Percentage values are always relative to another quantity. For example, an element's length is relative to its parent element's length.
+
+### Lengths
+
+- The numeric type you will come across most frequently is `<length>`. For example, `10px` (pixels) or `30em`. There are two types of lengths used in CSS — relative and absolute. It's important to know the difference in order to understand how big things will become.
+
+#### Absolute length units
+
+- The following are all absolute length units — they are not relative to anything else, and are generally considered to always be the same size.
+
+| Unit | Name                | Equivalent to            |
+| ---- | ------------------- | ------------------------ |
+| cm   | Centimeters         | 1cm = 37.8px = 25.2/64in |
+| mm   | Millimeters         | 1mm = 1/10th of 1cm      |
+| Q    | Quarter-millimeters | 1Q = 1/40th of 1cm       |
+| in   | Inches              | 1in = 2.54cm = 96px      |
+| pc   | Picas               | 1pc = 1/6th of 1in       |
+| pt   | Points              | 1pt = 1/72nd of 1in      |
+| px   | Pixels              | 1px = 1/96th of 1in      |
+
+- Most of these units are more useful when used for print, rather than screen output. For example, we don't typically use cm (centimeters) on screen. The only value that you will commonly use is px (pixels).
+
+### Relative length units
+
+- Relative length units are relative to something else, perhaps the size of the parent element's font, or the size of the viewport. The benefit of using relative units is that with some careful planning you can make it so the size of text or other elements scales relative to everything else on the page. Some of the most useful units for web development are listed in the table below.
+
+| Unit      | Relative to                                                                                                                                                       |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| em        | Font size of the parent, in the case of typographical properties like font-size, and font size of the element itself, in the case of other properties like width. |
+| ex        | x-height of the element's font.                                                                                                                                   |
+| ch        | The advance measure (width) of the glyph "0" of the element's font.                                                                                               |
+| rem       | Font size of the root element.                                                                                                                                    |
+| lh        | Line height of the element.                                                                                                                                       |
+| rlh       | Line height of the root element. When used on the font-size or line-height properties of the root element, it refers to the properties' initial value.            |
+| vw        | 1% of the viewport's width.                                                                                                                                       |
+| vh        | 1% of the viewport's height.                                                                                                                                      |
+| vmin      | 1% of the viewport's smaller dimension.                                                                                                                           |
+| vmax      | 1% of the viewport's larger dimension.                                                                                                                            |
+| vb        | 1% of the size of the initial containing block in the direction of the root element's block axis.                                                                 |
+| vi        | 1% of the size of the initial containing block in the direction of the root element's inline axis.                                                                |
+| svw , svh | 1% of the small viewport's width and height, respectively.                                                                                                        |
+| lvw , lvh | 1% of the large viewport's width and height, respectively.                                                                                                        |
+| dvw , dvh | 1% of the dynamic viewport's width and height, respectively.                                                                                                      |
+
+### Exploring an example
+
+- In the example below, you can see how some relative and absolute length units behave. The first box has a width set in pixels. As an absolute unit, this width will remain the same no matter what else changes.
+- The second box has a width set in `vw` (viewport width) units. This value is relative to the viewport width, and so 10vw is 10 percent of the width of the viewport. If you change the width of your browser window, the size of the box should change. However this example is embedded into the page using an `<iframe>`, so this won't work. To see this in action you'll have to try the example after opening it in its own browser tab.
+- The third box uses `em` units. These are relative to the font size. A font size of `1em` was set on the containing `<div>`, which has a class of `.wrapper`. Change this value to `1.5em` and you will see that the font size of all the elements increases, but only the last item will get wider, as its width is relative to that font size.
+
+```
+.wrapper {
+  font-size: 1em;
+}
+
+.px {
+  width: 200px;
+}
+
+.vw {
+  width: 10vw;
+}
+
+.em {
+  width: 10em;
+}
+```
+
+```
+<div class="wrapper">
+  <div class="box px">I am 200px wide</div>
+  <div class="box vw">I am 10vw wide</div>
+  <div class="box em">I am 10em wide</div>
+</div>
+```
+
+### ems and rems
+
+- `em` and `rem` are the two relative lengths you are likely to encounter most frequently when sizing anything from boxes to text.
+- The HTML illustrated below is a set of nested lists — we have three lists in total and both examples have the same HTML. The only difference is that the first has a class of _ems_ and the second a class of _rems_.
+- To start, `16px` is the font size on the `<html>` element
+- **To recap, the em unit means "my parent element's font-size"** in the case of typography. The `<li>` elements inside the `<ul>` with a class of `ems` take their sizing from their parent. So each successive level of nesting gets progressively larger, as each has its font size set to `1.3em` — 1.3 times its parent's font size.
+
+- **To recap, the rem unit means "The root element's font-size" (rem stands for "root em")**. The `<li>` elements inside the `<ul>` with a class of `rems` take their sizing from the root element (`<html>`). This means that each successive level of nesting does not keep getting larger.
+
+```
+html {
+  font-size: 16px;
+}
+
+.ems li {
+  font-size: 1.3em;
+}
+
+.rems li {
+  font-size: 1.3rem;
+}
+```
+
+```
+<ul class="ems">
+  <li>One</li>
+  <li>Two</li>
+  <li>Three
+    <ul>
+      <li>Three A</li>
+      <li>Three B
+        <ul>
+          <li>Three B 2</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ul class="rems">
+  <li>One</li>
+  <li>Two</li>
+  <li>Three
+    <ul>
+      <li>Three A</li>
+      <li>Three B
+        <ul>
+          <li>Three B 2</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+```
+
+### Percentages
+
+- In a lot of cases, a percentage is treated in the same way as a length. The thing with percentages is that they are always set relative to some other value. For example, if you set an element's `font-size` as a percentage, it will be a percentage of the `font-size` of the element's parent. If you use a percentage for a `width` value, it will be a percentage of the `width` of the parent.
+- In the below example the two percentage-sized boxes and the two pixel-sized boxes have the same class names. The sets are 40% and 200px wide respectively.
+- The difference is that the second set of two boxes is inside a wrapper that is 400 pixels wide. The second 200px wide box is the same width as the first one, but the second 40% box is now 40% of 400px — a lot narrower than the first one!
+
+```
+.wrapper {
+  width: 400px;
+  border: 5px solid rebeccapurple;
+}
+
+.px {
+  width: 200px;
+}
+
+.percent {
+  width: 40%;
+}
+```
+
+```
+<div class="box px">I am 200px wide</div>
+<div class="box percent">I am 40% wide</div>
+<div class="wrapper">
+  <div class="box px">I am 200px wide</div>
+  <div class="box percent">I am 40% wide</div>
+</div>
+```
+
+- The next example has font sizes set in percentages. Each `<li>` has a `font-size` of 80%; therefore, the nested list items become progressively smaller as they inherit their sizing from their parent.
+
+```
+li {
+  font-size: 80%;
+}
+```
+
+```
+<ul>
+  <li>One</li>
+  <li>Two</li>
+  <li>Three
+    <ul>
+      <li>Three A</li>
+      <li>Three B
+        <ul>
+          <li>Three B 2</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+```
+
+- Note that, while many value types accept a length or a percentage, there are some that only accept length. You can see which values are accepted on the MDN property reference pages. If the allowed value includes `<length-percentage>` then you can use a length or a percentage. If the allowed value only includes `<length>`, it is not possible to use a percentage.
+
+#### Numbers
+
+- Some value types accept numbers, without any unit added to them. An example of a property which accepts a unitless number is the `opacity` property, which controls the opacity of an element (how transparent it is). This property accepts a number between `0` (fully transparent) and `1` (fully opaque).
+
+## Color
+
+- There are many ways to specify color in CSS, some of which are more recently implemented than others. The same color values can be used everywhere in CSS, whether you are specifying text color, background color, or whatever else.
+- The standard color system available in modern computers supports 24-bit colors, which allows the display of about 16.7 million distinct colors via a combination of different red, green and blue channels with 256 different values per channel (256 x 256 x 256 = 16,777,216).
+
+### Color keywords
+
+- Quite often in examples here in the learn section or elsewhere on MDN you will see the color keywords used, as they are a simple and understandable way of specifying color. There are a number of these keywords, some of which have fairly entertaining names! You can see a full list on the page for the `<color>` value type.
+- Ex:
+
+```
+.one {
+  background-color: antiquewhite;
+}
+
+.two {
+  background-color: blueviolet;
+}
+
+.three {
+  background-color: greenyellow;
+}
+```
+
+```
+<div class="wrapper">
+  <div class="box one">antiquewhite</div>
+  <div class="box two">blueviolet</div>
+  <div class="box three">greenyellow</div>
+</div>
+```
+
+### Hexadecimal RGB values
+
+- The next type of color value you are likely to encounter is hexadecimal codes. Each hex value consists of a hash/pound symbol (#) followed by six hexadecimal numbers, each of which can take one of 16 values between 0 and f (which represents 15) — so `0123456789abcdef`. Each pair of values represents one of the channels — red, green and blue — and allows us to specify any of the 256 available values for each (16 x 16 = 256).
+- These values are a bit more complex and less easy to understand, but they are a lot more versatile than keywords — you can use hex values to represent any color you want to use in your color scheme.
+- Ex:
+
+```
+.one {
+  background-color: #02798b;
+}
+
+.two {
+  background-color: #c55da1;
+}
+
+.three {
+  background-color: #128a7d;
+}
+```
+
+### RGB and RGBA values
+
+- The third scheme we'll talk about here is RGB. An RGB value is a function — `rgb()` — which is given three parameters that represent the red, green, and blue channel values of the colors, in much the same way as hex values. The difference with RGB is that each channel is represented not by two hex digits, but by a decimal number between 0 and 255 — somewhat easier to understand.
+- Ex:
+
+```
+.one {
+  background-color: rgb(2, 121, 139);
+}
+
+.two {
+  background-color: rgb(197, 93, 161);
+}
+
+.three {
+  background-color: rgb(18, 138, 125);
+}
+```
+
+- You can also use RGBA colors — these work in exactly the same way as RGB colors, and so you can use any RGB values. However, there is a fourth value that represents the alpha channel of the color, which controls opacity. If you set this value to `0` it will make the color fully transparent, whereas `1` will make it fully opaque. Values in between give you different levels of transparency.
+- Ex (although you do need to include a background image to note the difference):
+
+```
+.one {
+  background-color: rgba(2, 121, 139, .3);
+}
+
+.two {
+  background-color: rgba(197, 93, 161, .7);
+}
+
+.three {
+  background-color: rgba(18, 138, 125, .9);
+}
+```
+
+- Note: As of CSS Colors Level 4, `rgba()` is an alias for `rgb()` and `hsla()` is an alias for `hsl()` (see below). In browsers that implement the Level 4 standard, they accept the same parameters and behave the same way. So for example both `rgba()` and `rgb()` accept colors with and without alpha channel values. Try changing the above example's `rgba()` functions to `rgb()` and see if the colors still work! Which style you use is up to you, but separating out non-transparent and transparent color definitions to use the different functions gives (very) slightly better browser support and can act as a visual indicator of where transparent colors are being defined in your code.
+
+### HSL and HSLA values
+
+- Slightly less well-supported than RGB is the HSL color model (not supported on old versions of IE), which was implemented after much interest from designers. Instead of red, green, and blue values, the `hsl()` function accepts hue, saturation, and lightness values, which are used to distinguish between the 16.7 million colors, but in a different way:
+
+- **Hue**: The base shade of the color. This takes a value between 0 and 360, representing the angles around a color wheel.
+- **Saturation**: How saturated is the color? This takes a value from 0–100%, where 0 is no color (it will appear as a shade of grey), and 100% is full color saturation
+- **Lightness**: How light or bright is the color? This takes a value from 0–100%, where 0 is no light (it will appear completely black) and 100% is full light (it will appear completely white)
+
+- Ex:
+
+```
+.one {
+  background-color: hsl(188, 97%, 28%);
+}
+
+.two {
+  background-color: hsl(321, 47%, 57%);
+}
+
+.three {
+  background-color: hsl(174, 77%, 31%);
+}
+```
+
+- Just as RGB has RGBA, HSL has an HSLA equivalent, which gives you the same ability to specify the alpha channel.
+- You can use any of these color values in your projects. It is likely that for most projects you will decide on a color palette and then use those colors — and your chosen method of specifying color — throughout the whole project. You can mix and match color models, however for consistency it is usually best if your entire project uses the same one!
+
+## Images
+
+- The `<image>` value type is used wherever an image is a valid value. This can be an actual image file pointed to via a `url()` function, or a gradient.
+- Ex:
+
+```
+.image {
+  background-image: url(star.png);
+}
+
+.gradient {
+  background-image: linear-gradient(90deg, rgba(119,0,255,1) 39%, rgba(0,212,255,1) 100%);
+}
+```
+
+```
+<div class="box image"></div>
+<div class="box gradient"></div>
+```
+
+## Position
+
+- The `<position>` value type represents a set of 2D coordinates, used to position an item such as a background image (via `background-position`). It can take keywords such as `top`, `left`, `bottom`, `right`, and `center` to align items with specific bounds of a 2D box, along with lengths, which represent offsets from the top and left-hand edges of the box.
+- A typical position value consists of two values — the first sets the position horizontally, the second vertically. If you only specify values for one axis the other will default to `center`.
+
+## Strings and identifiers
+
+- Throughout the examples above, we've seen places where keywords are used as a value (for example `<color>` keywords like `red`, `black`, `rebeccapurple`, and `goldenrod`). These keywords are more accurately described as identifiers, a special value that CSS understands. As such they are not quoted — they are not treated as strings.
+- There are places where you use strings in CSS. For example, when specifying generated content. In this case, the value is quoted to demonstrate that it is a string. In the below example we use unquoted color keywords along with a quoted generated content string.
+- Ex:
+
+```
+.box {
+  width:400px;
+  padding: 1em;
+  border-radius: .5em;
+  border: 5px solid rebeccapurple;
+  background-color: lightblue;
+}
+
+.box::after {
+  content: "This is a string. I know because it is quoted in the CSS."
+}
+```
+
+```
+<div class="box"></div>
+```
+
+## Functions
+
+- The final type of value we will take a look at is the group of values known as functions. In programming, a function is a reusable section of code that can be run multiple times to complete a repetitive task with minimum effort on the part of both the developer and the computer. Functions are usually associated with languages like JavaScript, Python, or C++, but they do exist in CSS too, as property values. We've already seen functions in action in the Colors section — `rgb()`, `hsl()`, etc. The value used to return an image from a file — `url()` — is also a function.
+- A value that behaves more like something you might find in a traditional programming language is the `calc()` CSS function. This function gives you the ability to do simple calculations inside your CSS. It's particularly useful if you want to work out values that you can't define when writing the CSS for your project, and need the browser to work out for you at runtime.
+- For example, below we are using `calc()` to make the box `20% + 100px` wide. The 20% is calculated from the width of the parent container `.wrapper` and so will change if that width changes. We can't do this calculation beforehand because we don't know what 20% of the parent will be, so we use `calc()` to tell the browser to do it for us.
+
+```
+.wrapper {
+  width: 400px;
+}
+
+.box {
+  width: calc(20% + 100px);
+}
+```
+
+```
+<div class="wrapper">
+  <div class="box">My width is calculated.</div>
+</div>
+```
+
+# Sizing items in CSS
+
+- In this lesson we will summarize the various ways elements get a size via CSS and define a few terms about sizing that will help you in the future.
+
+## The natural or intrinsic size of things
+
+- HTML Elements have a natural size, set before they are affected by any CSS. A straightforward example is an image. An image file contains sizing information, described as its **intrinsic size**. This size is determined by the image itself, not by any formatting we happen to apply.
+- If you place an image on a page and do not change its height or width, either by using attributes on the `<img>` tag or else by CSS, it will be displayed using that intrinsic size. We have given the image in the example below a border so that you can see the extent of its size as defined in its file.
+- An empty `<div>`, on the other hand, has no size of its own. If you add a `<div>` to your HTML with no content, then give it a border as we did with the image, you will see a line on the page. This is the collapsed border on the element — there is no content to hold it open. In our example below, that border stretches to the width of the container, because it is a block level element, a behavior that should be starting to become familiar to you. It has no height (or size in the block dimension) because there is no content.
+
+```
+.box {
+  border: 5px solid darkblue;
+}
+```
+
+```
+<div class="box"></div>
+```
+
+## Setting a specific size
+
+- We can, of course, give elements in our design a specific size. When a size is given to an element (the content of which then needs to fit into that size) we refer to it as an **extrinsic size**. Take our `<div>` from the example above — we can give it specific `width` and `height` values, and it will now have that size no matter what content is placed into it. As we discovered in our previous lesson on overflow, a set height can cause content to overflow if there is more content than the element has space to fit inside it.
+
+```
+.box {
+  border: 5px solid darkblue;
+  height: 150px;
+  width: 200px;
+}
+```
+
+```
+<div class="wrapper">
+  <div class="box"></div>
+  <div class="box">These boxes both have a height set, this box has content in it which will need more space than the assigned height, and so we get overflow. </div>
+</div>
+```
+
+### Using percentages
+
+- In many ways, percentages act like length units, they can often be used interchangeably with lengths. When using a percentage you need to be aware what it is a percentage _of_. In the case of a box inside another container, if you give the child box a percentage width it will be a percentage of the width of the parent container.
+
+```
+.box {
+  border: 5px solid darkblue;
+  width: 50%;
+}
+```
+
+```
+<div class="box">
+  I have a percentage width.
+</div>
+```
+
+- This is because percentages resolve against the size of the containing block. With no percentage applied our `<div>` would take up 100% of the available space, as it is a block level element. If we give it a percentage width, this becomes a percentage of the space it would normally fill.
+
+### Percentage margins and padding
+
+- If you set `margins` and `padding` as a percentage, you may notice some strange behavior. In the below example we have a box. We have given the inner box a `margin` of 10% and a `padding` of 10%. The padding and margin on the top and bottom of the box are the same size as the margin on the left and right.
+
+```
+.box {
+  border: 5px solid darkblue;
+  width: 300px;
+  margin: 10%;
+  padding: 10%;
+}
+```
+
+```
+<div class="box">
+  I have margin and padding set to 10% on all sides.
+</div>
+```
+
+- You might expect for example the percentage top and bottom margins to be a percentage of the element's height, and the percentage left and right margins to be a percentage of the element's width. However, this is not the case!
+- When you use margin and padding set in percentages, the value is calculated from the **inline size** of the containing block — therefore the width when working in a horizontal language. In our example, all of the margins and padding are 10% of the width. This means you can have equal-sized margins and padding all around the box. This is a fact worth remembering if you do use percentages in this way.
+
+## min- and max- sizes
+
+- In addition to giving things a fixed size, we can ask CSS to give an element a minimum or a maximum size. If you have a box that might contain a variable amount of content, and you always want it to be _at least_ a certain height, you could set the `min-height` property on it. The box will always be at least this height, but will then grow taller if there is more content than the box has space for at its minimum height.
+
+- In the example below you can see two boxes, both with a defined `min-height` of 150 pixels. The box on the left is 150 pixels tall; the box on the right has content that needs more room, and so it has grown taller than 150 pixels.
+
+```
+.box {
+  border: 5px solid darkblue;
+  min-height: 150px;
+  width: 200px;
+}
+```
+
+```
+<div class="wrapper">
+  <div class="box"></div>
+  <div class="box">These boxes both have a min-height set, this box has content in it which will need more space than the assigned height, and so it grows from the minimum.</div>
+</div>
+```
+
+- This is very useful for dealing with variable amounts of content while avoiding overflow.
+- A common use of `max-width` is to cause images to scale down if there is not enough space to display them at their intrinsic width while making sure they don't become larger than that width.
+- As an example, if you were to set `width: 100%` on an image, and its intrinsic width was smaller than its container, the image would be forced to stretch and become larger, causing it to look pixelated.
+- If you instead use `max-width: 100%`, and its intrinsic width is smaller than its container, the image will not be forced to stretch and become larger, thus preventing pixelation.
+- This technique is used to make images _responsive_, so that when viewed on a smaller device they scale down appropriately. You should, however, not use this technique to load really large images and then scale them down in the browser. Images should be appropriately sized to be no larger than they need to be for the largest size they are displayed in the design. Downloading overly large images will cause your site to become slow, and it can cost users more money if they are on a metered connection.
+
+## Viewport Units
+
+- The viewport — which is the visible area of your page in the browser you are using to view a site — also has a size. In CSS we have units which relate to the size of the viewport — the `vw` unit for viewport width, and `vh` for viewport height. Using these units you can size something relative to the viewport of the user.
+- `1vh` is equal to 1% of the viewport height, and `1vw` is equal to 1% of the viewport width. You can use these units to size boxes, but also text. In the example below we have a box which is sized as 20vh and 20vw. The box contains a letter A, which has been given a font-size of 10vh.
+
+```
+.box {
+  border: 5px solid darkblue;
+  width: 20vw;
+  height: 20vh;
+  font-size: 10vh;
+}
+```
+
+```
+<div class="box">
+  A
+</div>
+```
+
+- Sizing things according to the viewport can be useful in your designs. For example, if you want a full-page hero section to show before the rest of your content, making that part of your page 100vh high will push the rest of the content below the viewport, meaning that it will only appear once the document is scrolled.
+
+# Images, media, and form elements
+
+- In this lesson we will take a look at how certain special elements are treated in CSS. Images, other media, and form elements behave a little differently from regular boxes in terms of your ability to style them with CSS. Understanding what is and isn't possible can save some frustration, and this lesson will highlight some of the main things that you need to know.
+
+## Replaced elements
+
+- Images and video are described as **replaced elements**. This means that CSS cannot affect the internal layout of these elements — only their position on the page amongst other elements. As we will see however, there are various things that CSS can do with an image.
+- Certain replaced elements, such as images and video, are also described as having an **aspect ratio**. This means that it has a size in both the horizontal (x) and vertical (y) dimensions, and will be displayed using the intrinsic dimensions of the file by default.
+
+## Sizing images
+
+- Everything in CSS generates a box. If you place an image inside a box that is smaller or larger than the intrinsic dimensions of the image file in either direction, it will either appear smaller than the box, or overflow the box. You need to make a decision about what happens with the overflow.
+- As an example: consider an image that's smaller than the box and another image that's overflowing. This begs the question of what we can do about the overflow.
+
+  - A common technique is to make the max-width of an image 100%. This will enable the image to become smaller in size than the box but not larger. This technique will also work with other replaced elements such as `<video>`s, or `<iframe>`s.
+
+- You can make other choices about images inside containers. For example, you may want to size an image so it completely covers a box.
+
+  - The `object-fit` property can help you here. When using object-fit the replaced element can be sized to fit a box in a variety of ways.
+
+- Using value `cover` for `object-fit` will size the image down, maintaining the aspect ratio so that it neatly fills the box. As the aspect ratio is maintained, some parts of the image will be cropped by the box.
+- If we use `contain` as a value, the image will be scaled down until it is small enough to fit inside the box. This will result in "letterboxing" if it is not the same aspect ratio as the box.
+- You could also try the value of `fill`, which will fill the box but not maintain the aspect ratio.
+
+## Replaced elements in layout
+
+- When using various CSS layout techniques on replaced elements, you may well find that they behave slightly differently from other elements. For example, in a flex or grid layout elements are stretched by default to fill the entire area. Images will not stretch, and instead will be aligned to the start of the grid area or flex container.
+- We also need to remember that replaced elements, when they become part of a grid or flex layout, have different default behaviors, essentially to avoid them being stretched strangely by the layout.
+- To force the image to stretch to fill the grid cell it is in, you'd have to do something like the following:
+
+```
+img {
+  width: 100%;
+  height: 100%;
+}
+```
+
+## Form elements
+
+- Form elements can be a tricky issue when it comes to styling with CSS. The Web Forms module contains detailed guides to the trickier aspects of styling these. There are, however, a few key basics worth highlighting in this section.
+- Many form controls are added to your page by way of the `<input>` element — this defines simple form fields such as text inputs, through to more complex fields such as color and date pickers. There are some additional elements, such as `<textarea>` for multiline text input, and also elements used to contain and label parts of forms such as `<fieldset>` and `<legend>`.
+- HTML also contains attributes that enable web developers to indicate which fields are required, and even the type of content that needs to be entered. If the user enters something unexpected, or leaves a required field blank, the browser can show an error message. Different browsers vary with one another in how much styling and customization they allow for such items.
+
+### Styling text input elements
+
+- Elements that allow for text input, such as `<input type="text">`, and the more specific `<input type="email">`, and the `<textarea>` element are quite easy to style and tend to behave just like other boxes on your page. The default styling of these elements will differ, however, based on the operating system and browser that your user visits the site with.
+- In the example below we have styled some text inputs using CSS — you can see that things such as borders, margins and padding all apply as you would expect. We are using attribute selectors to target the different input types:
+
+```
+input[type="text"],
+input[type="email"] {
+  border: 2px solid #000;
+  margin: 0 0 1em 0;
+  padding: 10px;
+  width: 100%;
+}
+
+input[type="submit"] {
+  border: 3px solid #333;
+  background-color: #999;
+  border-radius: 5px;
+  padding: 10px 2em;
+  font-weight: bold;
+  color: #fff;
+}
+
+input[type="submit"]:hover {
+  background-color: #333;
+}
+```
+
+```
+<form>
+  <div><label for="name">Name</label>
+  <input type="text" id="name"></div>
+  <div><label for="email">Email</label>
+  <input type="email" id="email"></div>
+  <div class="buttons"><input type="submit" value="Submit"></div>
+</form>
+```
+
+- As explained in the lessons on form styling in the HTML part of this course, many of the more complex input types are rendered by the operating system and are inaccessible to styling. You should therefore always assume that forms are going to look quite different for different visitors and test complex forms in a number of browsers.
+
+### Inheritance and form elements
+
+- In some browsers, form elements do not inherit font styling by default. Therefore, if you want to be sure that your form fields use the font defined on the body, or on a parent element, you should add this rule to your CSS.
+
+```
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+}
+```
+
+### Form elements and box-sizing
+
+- Across browsers, form elements use different box sizing rules for different widgets. You learned about the `box-sizing` property in our box model lesson and you can use this knowledge when styling forms to ensure a consistent experience when setting widths and heights on form elements.
+- For consistency, it is a good idea to set margins and padding to `0` on all elements, then add these back in when styling particular controls:
+
+```
+button,
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+```
+
+### Other useful settings
+
+- In addition to the rules mentioned above, you should also set `overflow: auto` on `<textarea>`s to stop IE showing a scrollbar when there is no need for one:
+
+```
+textarea {
+  overflow: auto;
+}
+```
+
+### Putting it all together into a "reset"
+
+- As a final step, we can wrap up the various properties discussed above into the following "form reset" to provide a consistent base to work from. This includes all the items mentioned in the last three sections:
+
+```
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+textarea {
+  overflow: auto;
+}
+```
+
+- Note: Normalizing stylesheets are used by many developers to create a set of baseline styles to use on all projects. Typically these do similar things to those described above, making sure that anything different across browsers is set to a consistent default before you do your own work on the CSS. They are not as important as they once were, as browsers are typically more consistent than in the past. However if you want to take a look at one example, check out Normalize.css, which is a very popular stylesheet used as a base by many projects.
+
+# Styling tables
+
+- Styling an HTML table isn't the most glamorous job in the world, but sometimes we all have to do it. This article provides a guide to making HTML tables look good, with some specific table styling techniques highlighted.
+
+## A typical HTML
+
+- We will start by looking at a typical HTML table. These guys decided to make things more interesting by making it about famous punk bands from the UK.
+
+```
+<table>
+  <caption>
+    A summary of the UK's most famous punk bands
+  </caption>
+  <thead>
+    <tr>
+      <th scope="col">Band</th>
+      <th scope="col">Year formed</th>
+      <th scope="col">No. of Albums</th>
+      <th scope="col">Most famous song</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Buzzcocks</th>
+      <td>1976</td>
+      <td>9</td>
+      <td>Ever fallen in love (with someone you shouldn't've)</td>
+    </tr>
+    <tr>
+      <th scope="row">The Clash</th>
+      <td>1976</td>
+      <td>6</td>
+      <td>London Calling</td>
+    </tr>
+
+    <!-- several other great bands -->
+
+    <tr>
+      <th scope="row">The Stranglers</th>
+      <td>1974</td>
+      <td>17</td>
+      <td>No More Heroes</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th scope="row" colspan="2">Total albums</th>
+      <td colspan="2">77</td>
+    </tr>
+  </tfoot>
+</table>
+```
+
+![unstyled table](assets/table-unstyled.png)
