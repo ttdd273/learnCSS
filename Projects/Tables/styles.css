@@ -1,0 +1,63 @@
+/* Add padding of 0.3em to the table headings and data and align them at the top of their cells. */
+
+table {
+  table-layout: fixed;
+  font-size: 75%;
+  border-collapse: collapse;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+
+th,
+td {
+  padding: 0.3em;
+  vertical-align: top;
+}
+
+caption {
+  color: rebeccapurple;
+  font-weight: bold;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  font-style: italic;
+}
+
+/* Typography */
+
+html {
+  font: 18px/1.2 helvetica, san-serif;
+}
+
+/* Align headings and data for columns containing numbers right.
+Align headings and data for columns containing text left. */
+
+tr :nth-child(2),
+tr :nth-child(3) {
+  text-align: right;
+}
+
+tr :nth-child(1),
+tr :nth-child(4) {
+  text-align: left;
+}
+
+tfoot tr :nth-child(1) {
+  text-align: right;
+}
+
+tfoot tr :nth-child(2) {
+  text-align: left;
+}
+th {
+  letter-spacing: 0.5px;
+}
+
+tfoot {
+  border-top: 1px solid #999;
+}
+
+/* Zebra Stripping */
+
+tbody tr:nth-child(odd) {
+  background-color: #eee;
+}
