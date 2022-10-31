@@ -3033,3 +3033,586 @@ p::first-line {
 ```
 font: italic normal bold normal 3em/1.5 Helvetica, Arial, sans-serif;
 ```
+
+# Styling lists
+
+- Lists behave like any other text for the most part, but there are some CSS properties specific to lists that you need to know about, as well as some best practices to consider.
+
+## A simple list example
+
+- We'll look at unordered, ordered, and description lists — all have styling features that are similar, as well as some that are particular to themselves.
+
+```
+<h2>Shopping (unordered) list</h2>
+
+<p>
+  Paragraph for reference, paragraph for reference, paragraph for reference,
+  paragraph for reference, paragraph for reference, paragraph for reference.
+</p>
+
+<ul>
+  <li>Hummus</li>
+  <li>Pita</li>
+  <li>Green salad</li>
+  <li>Halloumi</li>
+</ul>
+
+<h2>Recipe (ordered) list</h2>
+
+<p>
+  Paragraph for reference, paragraph for reference, paragraph for reference,
+  paragraph for reference, paragraph for reference, paragraph for reference.
+</p>
+
+<ol>
+  <li>Toast pita, leave to cool, then slice down the edge.</li>
+  <li>
+    Fry the halloumi in a shallow, non-stick pan, until browned on both sides.
+  </li>
+  <li>Wash and chop the salad.</li>
+  <li>Fill pita with salad, hummus, and fried halloumi.</li>
+</ol>
+
+<h2>Ingredient description list</h2>
+
+<p>
+  Paragraph for reference, paragraph for reference, paragraph for reference,
+  paragraph for reference, paragraph for reference, paragraph for reference.
+</p>
+
+<dl>
+  <dt>Hummus</dt>
+  <dd>
+    A thick dip/sauce generally made from chick peas blended with tahini, lemon
+    juice, salt, garlic, and other ingredients.
+  </dd>
+  <dt>Pita</dt>
+  <dd>A soft, slightly leavened flatbread.</dd>
+  <dt>Halloumi</dt>
+  <dd>
+    A semi-hard, unripened, brined cheese with a higher-than-usual melting
+    point, usually made from goat/sheep milk.
+  </dd>
+  <dt>Green salad</dt>
+  <dd>That green healthy stuff that many of us just use to garnish kebabs.</dd>
+</dl>
+```
+
+- Using the developer web tools, we can see that:
+  - The `<ul>` and `<ol>` elements have a top and bottom margin of 16px (1em) and a padding-left of 40px (2.5em).
+  - The list items (`<li>` elements) have no set defaults for spacing.
+  - The `<dl>` element has a top and bottom margin of 16px (1em), but no padding set.
+  - The `<dd>` elements have margin-left of 40px (2.5em).
+  - The `<p>` elements we've included for reference have a top and bottom margin of 16px (1em) — the same as the different list types.
+
+## Handling list spacing
+
+- When styling lists, you need to adjust their styles so they keep the same vertical spacing as their surrounding elements (such as paragraphs and images; sometimes called vertical rhythm), and the same horizontal spacing as each other.
+
+```
+/* General styles */
+
+html {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10px;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+ul,
+ol,
+dl,
+p {
+  font-size: 1.5rem;
+}
+
+li,
+p {
+  line-height: 1.5;
+}
+
+/* Description list styles */
+
+dd,
+dt {
+  line-height: 1.5;
+}
+
+dt {
+  font-weight: bold;
+}
+```
+
+- The first rule sets a sitewide font and a baseline font size of 10px. These are inherited by everything on the page.
+- Rules 2 and 3 set relative font sizes for the headings, different list types (the children of the list elements inherit these), and paragraphs. This means that each paragraph and list will have the same font size and top and bottom spacing, helping to keep the vertical rhythm consistent.
+- Rule 4 sets the same `line-height` on the paragraphs and list items — so the paragraphs and each individual list item will have the same spacing between lines. This will also help to keep the vertical rhythm consistent.
+- Rules 5 and 6 apply to the description list. We set the same `line-height` on the description list terms and descriptions as we did with the paragraphs and list items. Again, consistency is good! We also make the description terms have bold font, so they visually stand out easier.
+
+### List specific styles
+
+- Now that we've looked at general spacing techniques for lists, let's explore some list-specific properties. There are three properties you should know about to start with, which can be set on `<ul>` or `<ol>` elements:
+  - `list-style-type`: Sets the type of bullets to use for the list, for example, square or circle bullets for an unordered list, or numbers, letters, or roman numerals for an ordered list.
+  - `list-style-position`: Sets whether the bullets, at the start of each item, appear inside or outside the lists.
+  - `list-style-image`: Allows you to use a custom image for the bullet, rather than a simple square or circle.
+
+#### Bullet styles
+
+- Here's an example that uses Roman numerals:
+
+```
+ol {
+  list-style-type: upper-roman;
+}
+```
+
+- More options can be found in the `list-style-type` reference page.
+
+#### Bullet position
+
+- The `list-style-position` property sets whether the bullets appear inside the list items, or outside them before the start of each item. The default value is outside, which causes the bullets to sit outside the list items.
+- If you set the value to inside, the bullets will sit inside the lines:
+  - It will appear as if the bullets are part of the same line.
+
+```
+ol {
+  list-style-type: upper-roman;
+  list-style-position: inside;
+}
+```
+
+#### Using a custom bullet image
+
+```
+ul {
+  list-style-image: url(star.svg);
+}
+```
+
+- However, this property is a bit limited in terms of controlling the position, size, etc. of the bullets. You are better off using the `background` family of properties, which you've learned in the Backgrounds and borders article. For now, here's a taster!
+- Here's an example:
+
+```
+ul {
+  padding-left: 2rem;
+  list-style-type: none;
+}
+
+ul li {
+  padding-left: 2rem;
+  background-image: url(star.svg);
+  background-position: 0 0;
+  background-size: 1.6rem 1.6rem;
+  background-repeat: no-repeat;
+}
+```
+
+- Set the `padding-left` of the `<ul>` down from the default `40px` to `20px`, then set the same amount on the list items. This is so that, overall, the list items are still lined up with the order list items and the description list descriptions, but the list items have some padding for the background images to sit inside. If we didn't do this, the background images would overlap with the list item text, which would look messy.
+- Set the `list-style-type` to `none`, so that no bullet appears by default. We're going to use `background` properties to handle the bullets instead.
+- Inserted a bullet onto each unordered list item. The relevant properties are as follows:
+  - `background-image`: This references the path to the image file you want to use as the bullet.
+  - `background-position`: This defines where in the background of the selected element the image will appear — in this case we are saying `0 0`, which means the bullet will appear in the very top left of each list item.
+  - `background-size`: This sets the size of the background image. We ideally want the bullets to be the same size as the list items (or very slightly smaller or larger). We are using a size of `1.6rem` (`16px`), which fits very nicely with the `20px` padding we've allowed for the bullet to sit inside — `16px` plus `4px` of space between the bullet and the list item text works well.
+  - `background-repeat`: By default, background images repeat until they fill up the available background space. We only want one copy of the image inserted in each case, so we set this to a value of `no-repeat`.
+
+#### list-style shorthand
+
+- The three properties mentioned above can all be set using a single shorthand property, `list-style`. For example, the following CSS:
+
+```
+ul {
+  list-style-type: square;
+  list-style-image: url(example.png);
+  list-style-position: inside;
+}
+```
+
+- Could be replaced by:
+
+```
+ul {
+  list-style: square url(example.png) inside;
+}
+```
+
+- The values can be listed in any order, and you can use one, two, or all three (the default values used for the properties that are not included are `disc`, `none`, and `outside`). If both a `type` and an `image` are specified, the type is used as a fallback if the image can't be loaded for some reason.
+
+### Controlling list counting
+
+- Sometimes you might want to count differently on an ordered list — e.g., starting from a number other than 1, or counting backwards, or counting in steps of more than 1. HTML and CSS have some tools to help you here.
+
+#### start
+
+- The `start` attribute allows you to start the list counting from a number other than 1. The following example:
+
+```
+<ol start="4">
+  <li>Toast pita, leave to cool, then slice down the edge.</li>
+  <li>
+    Fry the halloumi in a shallow, non-stick pan, until browned on both sides.
+  </li>
+  <li>Wash and chop the salad.</li>
+  <li>Fill pita with salad, hummus, and fried halloumi.</li>
+</ol>
+```
+
+- Will give you 4, 5, 6, 7.
+
+#### reversed
+
+- The `reversed` attribute will start the list counting down instead of up. The following example:
+
+```
+<ol start="4" reversed>
+  <li>Toast pita, leave to cool, then slice down the edge.</li>
+  <li>
+    Fry the halloumi in a shallow, non-stick pan, until browned on both sides.
+  </li>
+  <li>Wash and chop the salad.</li>
+  <li>Fill pita with salad, hummus, and fried halloumi.</li>
+</ol>
+```
+
+- Will give you 4, 3, 2, 1.
+
+#### value
+
+- The `value` attribute allows you to set your list items to specific numerical values. The following example:
+
+```
+<ol>
+  <li value="2">Toast pita, leave to cool, then slice down the edge.</li>
+  <li value="4">
+    Fry the halloumi in a shallow, non-stick pan, until browned on both sides.
+  </li>
+  <li value="6">Wash and chop the salad.</li>
+  <li value="8">Fill pita with salad, hummus, and fried halloumi.</li>
+</ol>
+```
+
+# Styling Links
+
+- When styling links, it's important to understand how to make use of pseudo-classes to style their states effectively. It's also important to know how to style links for use in common interface features whose content varies, such as navigation menus and tabs. We'll look at both these topics in this article.
+
+## Let's look at some links
+
+### Link states
+
+- The first thing to understand is the concept of link states — different states that links can exist in. These can be styled using different pseudo-classes:
+  - `Link`: A link that has a destination (i.e., not just a named anchor), styled using the `:link` pseudo class.
+  - `Visited`: A link that has already been visited (exists in the browser's history), styled using the `:visited` pseudo class.
+  - `Hover`: A link that is hovered over by a user's mouse pointer, styled using the `:hover` pseudo class.
+  - `Focus`: A link that is focused (e.g., moved to by a keyboard user using the `Tab` key or something similar, or programmatically focused using `HTMLElement.focus()`) — this is styled using the `:focus` pseudo class.
+  - `Active`: A link that is activated (e.g., clicked on), styled using the `:active` pseudo class.
+
+### Default styles
+
+- The following example illustrates what a link will behave like by default (the CSS is enlarging and centering the text to make it stand out more).
+
+```
+<p><a href="#">A simple link</a></p>
+```
+
+```
+p {
+  font-size: 2rem;
+  text-align: center;
+}
+```
+
+- You'll notice a few things as you explore the default styles:
+
+  - Links are underlined.
+  - Unvisited links are blue.
+  - Visited links are purple.
+  - Hovering a link makes the mouse pointer change to a little hand icon.
+  - Focused links have an outline around them — you should be able to focus on the links on this page with the keyboard by pressing the tab key. (On Mac, you'll need to use option + tab , or enable the Full Keyboard Access: All controls option by pressing Ctrl + F7 .)
+  - Active links are red. Try holding down the mouse button on the link as you click it
+
+- Interestingly enough, these default styles are nearly the same as they were back in the early days of browsers in the mid-1990s.
+- This is because users know and have come to expect this behavior — if links were styled differently, it would confuse a lot of people.
+- This doesn't mean that you shouldn't style links at all. It just means that you shouldn't stray too far from the expected behavior.
+- You should at least:
+
+  - Use underlining for links, but not for other things. If you don't want to underline links, at least highlight them in some other way.
+  - Make them react in some way when hovered/focused, and in a slightly different way when activated.
+
+- The default styles can be turned off/changed using the following CSS properties:
+  - `color` for the text color.
+  - `cursor` for the mouse pointer style — you shouldn't turn this off unless you've got a very good reason.
+  - `outline` for the text outline. An outline is similar to a border. The only difference is that a border takes up space in the box and an outline doesn't; it just sits over the top of the background. The outline is a useful accessibility aid, so should not be removed without adding another method of indicating the focused link.
+
+### Styling some links
+
+- To start off with, we'll write out our empty rulesets:
+
+```
+a {
+}
+
+a:link {
+}
+
+a:visited {
+}
+
+a:focus {
+}
+
+a:hover {
+}
+
+a:active {
+}
+```
+
+- This order is important because link styles build on one another.
+
+  - For example, the styles in the first rule will apply to all the subsequent ones. When a link is activated, it's usually also hovered over.
+  - If you put these in the wrong order, and you're changing the same properties in each ruleset, things won't work as you expect.
+  - To remember the order, you could try using a mnemonic like **L**o**V**e **F**ears **HA**te.
+
+- Now let's add some more information to get this styled properly:
+
+```
+body {
+  width: 300px;
+  margin: 0 auto;
+  font-size: 1.2rem;
+  font-family: sans-serif;
+}
+
+p {
+  line-height: 1.4;
+}
+
+a {
+  outline: none;
+  text-decoration: none;
+  padding: 2px 1px 0;
+}
+
+a:link {
+  color: #265301;
+}
+
+a:visited {
+  color: #437a16;
+}
+
+a:focus {
+  border-bottom: 1px solid;
+  background: #bae498;
+}
+
+a:hover {
+  border-bottom: 1px solid;
+  background: #cdfeaa;
+}
+
+a:active {
+  background: #265301;
+  color: #cdfeaa;
+}
+```
+
+- We'll also provide some sample HTML to apply the CSS to:
+
+```
+<p>
+  There are several browsers available, such as <a href="#">Mozilla Firefox</a>,
+  <a href="#">Google Chrome</a>, and <a href="#">Microsoft Edge</a>.
+</p>
+```
+
+- This certainly looks different to the default styling, but it still provides a familiar enough experience for users to know what's going on:
+  - The first two rules are not that interesting to this discussion.
+  - The third rule uses the `a` selector to get rid of the default text underline and focus outline (which varies across browsers anyway), and adds a tiny amount of padding to each link — all of this will become clear later on.
+  - Next, we use the `a:link` and `a:visited` selectors to set a couple of color variations on unvisited and visited links, so they are distinct.
+  - The next two rules use `a:focus` and `a:hover` to set focused and hovered links to have different background colors, plus an underline to make the link stand out even more. Two points to note here are:
+    - The underline has been created using `border-bottom`, not `text-decoration` — some people prefer this because the former has better styling options than the latter. It's also drawn a bit lower so it doesn't cut across the descenders of the word being underlined (e.g., the tails on g and y).
+    - The `border-bottom` value has been set as `1px solid`, with no color specified. Doing this makes the border adopt the same color as the element's text, which is useful in cases like this where the text is a different color in each case.
+  - Finally, `a:active` is used to give the links an inverted color scheme while they are being activated, to make it clear something important is happening!
+
+## Including icons on links
+
+- A common practice is to include icons on links to provide more of an indicator as to what kind of content the link points to.
+- Let's look at a really simple example that adds an icon to external links (links that lead to other sites).
+- Such an icon usually looks like a little arrow pointing out of a box.
+- For this example, we'll use this great example from icons8.com.
+- The HTML we are applying the styling to:
+
+```
+<p>
+  For more information on the weather, visit our <a href="#">weather page</a>,
+  look at <a href="https://en.wikipedia.org/">weather on Wikipedia</a>, or check
+  out
+  <a href="https://www.nationalgeographic.org/topics/resource-library-weather/">
+    weather on National Geographic
+  </a>.
+</p>
+```
+
+- The CSS:
+
+```
+body {
+  width: 300px;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+
+p {
+  line-height: 1.4;
+}
+
+a {
+  outline: none;
+  text-decoration: none;
+  padding: 2px 1px 0;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+a:focus,
+a:hover {
+  border-bottom: 1px solid;
+}
+
+a:active {
+  color: red;
+}
+
+a[href^="http"] {
+  background: url("external-link-52.png") no-repeat 100% 0;
+  background-size: 16px 16px;
+  padding-right: 19px;
+}
+```
+
+- We'll skip over most of the CSS, as it's just the same information you've looked at before.
+- The last rule, however, is interesting: we're inserting a custom background image on external links in a similar manner to how we handled custom bullets on list items in the last article.
+- This time, however, we're using the `background` shorthand instead of the individual properties.
+  - We set the path to the image we want to insert, specify `no-repeat` so we only get one copy inserted, and then specify the position as 100% of the way to the right of the text content, and 0 pixels from the top.
+- We also use `background-size` to specify the size we want the background image to be shown at.
+  - It's useful to have a larger icon and then resize it like this as needed for responsive web design purposes.
+  - This does, however, only work with IE 9 and later. So if you need to support older browsers, you'll just have to resize the image and insert it as is.
+- Finally, we set some `padding-right` on the links to make space for the background image to appear in, so we aren't overlapping it with the text.
+- A final word: how did we select just external links?
+  - Well, if you are writing your HTML links properly, you should only be using absolute URLs for external links — it is more efficient to use relative links to link to other parts of your own site (as with the first link).
+  - The text "http" should therefore only appear in external links (like the second and third ones), and we can select this with an attribute selector: `a[href^="http"]` selects `<a>` elements, but only if they have an `href` attribute with a value that begins with "http".
+
+## Styling links as buttons
+
+- The tools you've explored so far in this article can also be used in other ways.
+  - For example, states like hover can be used to style many different elements, not just links — you might want to style the hover state of paragraphs, list items, or other things.
+- In addition, links are quite commonly styled to look and behave like buttons in certain circumstances. A website navigation menu can be marked up as a set of links, and this can be styled to look like a set of control buttons or tabs that provide the user with access to other parts of the site. Let's explore how.
+- The HTML for the navigation bar:
+
+```
+<nav class="container">
+  <a href="#">Home</a>
+  <a href="#">Pizza</a>
+  <a href="#">Music</a>
+  <a href="#">Wombats</a>
+  <a href="#">Finland</a>
+</nav>
+```
+
+- The CSS:
+
+```
+body,
+html {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.container {
+  display: flex;
+  gap: 0.625%;
+}
+
+a {
+  flex: 1;
+  text-decoration: none;
+  outline: none;
+  text-align: center;
+  line-height: 3;
+  color: black;
+}
+
+a:link,
+a:visited,
+a:focus {
+  background: yellow;
+}
+
+a:hover {
+  background: orange;
+}
+
+a:active {
+  background: red;
+  color: white;
+}
+```
+
+- The HTML defines a `<nav>` element with a `"container"` class. The `<nav>` contains our links.
+
+- The second rule says:
+  - The container is a flexbox. The items it contains — the links, in this case — will be _flex_ items.
+  - The gap between the flex items will be `0.625%` of the container's width.
+- The third rule styles the links:
+  - The first declaration, `flex: 1`, means that the widths of the items will be adjusted so they use all the available space in the container.
+  - Next, we turn off the default `text-decoration` and `outline` — we don't want those spoiling our look.
+  - The last three declarations are to center the text inside each link, set the `line-height` to 3 to give the buttons some height (which also has the advantage of centering the text vertically), and set the text color to black.
+
+# Web fonts
+
+- We'll see how to use custom fonts with your web page to allow for more varied, custom text styling.
+
+## Font families recap
+
+- As we looked at in Fundamental text and font styling, the fonts applied to your HTML can be controlled using the `font-family` property. This takes one or more font family names. When displaying a webpage, a browser will travel down a list of font-family values until it finds a font available on the system it is running on:
+
+```
+p {
+  font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+}
+```
+
+- This system works well, but traditionally web developers' font choices were limited.
+- There are only a handful of fonts that you can guarantee to be available across all common systems — the so-called Web-safe fonts.
+- You can use the font stack to specify preferred fonts, followed by web-safe alternatives, followed by the default system font.
+- However, this increases your workload because of the testing required to make sure that your designs work with each font.
+
+## Web fonts
+
+- But there is an alternative that works very well. (It's even supported by such older browsers as IE version 6.)
+- CSS allows you to specify font files, available on the web, to be downloaded along with your website as it's accessed.
+- This means that any browser supporting this CSS feature can display the fonts you've specifically chosen.
+- Amazing! The syntax required looks something like this:
+  - First of all, you have a `@font-face` ruleset at the start of the CSS, which specifies the font file(s) to download:
+
+```
+@font-face {
+  font-family: "myFont";
+  src: url("myFont.woff2");
+}
+```
+
+- Below this you use the font family name specified inside `@font-face` to apply your custom font to anything you like, as normal:
+
+```
+html {
+  font-family: "myFont", "Bitstream Vera Serif", serif;
+}
+```
