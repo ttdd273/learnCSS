@@ -3616,3 +3616,175 @@ html {
   font-family: "myFont", "Bitstream Vera Serif", serif;
 }
 ```
+
+- Here are some important things to bear in mind about web fonts:
+
+  - Fonts generally aren't free to use. You have to pay for them and/or follow other license conditions, such as crediting the font creator in your code (or on your site). You shouldn't steal fonts and use them without giving proper credit.
+  - All major browsers support WOFF/WOFF2 (Web Open Font Format versions 1 and 2). Even older browsers such as IE9 (released in 2011) support the WOFF format.
+  - WOFF2 supports the entirety of the TrueType and OpenType specifications, including variable fonts, chromatic fonts, and font collections.
+  - The order in which you list font files is important. If you provide the browser with a list of multiple font files to download, the browser will choose the first font file it's able to use. That's why the format you list first should be the preferred format — that is, WOFF2 — with the older formats listed after that. Browsers that don't understand one format will then fall back to the next format in the list.
+  - If you need to work with legacy browsers, you should provide EOT (Embedded Open Type), TTF (TrueType Font), and SVG web fonts for download. This article explains how to use the Fontsquirrel Webfont Generator to generate the required files.
+  - Note: Web fonts as a technology have been supported in Internet Explorer since version 4!
+
+- Using the FireFox WebDev tools can allow you to see ta ist of fonts that are used, and where they are used, etc.
+  - There are also variable fonts that has a continuous slider for the font weight: `v-fonts`
+
+## Active learning example
+
+### Finding fonts
+
+- For this example, we'll use two web fonts: one for the headings and one for the body text.
+- To start with, we need to find the font files that contain the fonts.
+- Fonts are created by font foundries and are stored in different file formats. There are generally three types of sites where you can obtain fonts:
+
+  - A free font distributor: This is a site that makes free fonts available for download (there may still be some license conditions, such as crediting the font creator). Examples include Font Squirrel, dafont, and Everything Fonts.
+  - A paid font distributor: This is a site that makes fonts available for a charge, such as fonts.com or myfonts.com. You can also buy fonts directly from font foundries, for example Linotype, Monotype, or Exljbris.
+  - An online font service: This is a site that stores and serves the fonts for you, making the whole process easier. See the Using an online font service section for more details.
+
+- Choose two fonts, one for the heading, and one for the paragraph, it doesn't matter whether they are True Type Fonts or Open Type Fonts.
+
+### Generating the required code
+
+- Now you'll need to generate the required code (and font formats). For each font, follow these steps:
+
+- Make sure you have satisfied any licensing requirement if you are going to use this in a commercial and/or Web project.
+
+  1. Go to the Fontsquirrel Webfont Generator.
+  2. Upload your two font files using the Upload Fonts button.
+  3. Check the checkbox labeled "Yes, the fonts I'm uploading are legally eligible for web embedding."
+  4. Click Download your kit.
+  5. After the generator has finished processing, you should get a ZIP file to download. Save it in the same directory as your HTML and CSS.
+
+- If you need to support legacy browsers, select the "Expert" mode in the Fontsquirrel Webfont Generator, select SVG, EOT, and TTF formats before downloading your kit.
+
+- Web services for font generation typically limit file sizes. In such a case, consider using tools such as:
+- sfnt2woff-zopfli for converting ttf to woff
+- fontforge for converting from ttf to svg
+- batik ttf2svf for converting from ttf to svg
+- woff2 for converting from ttf to woff
+
+### Implementing the code in your demo
+
+- At this point, unzip the webfont kit you just generated. Inside the unzipped directory you'll see some useful items:
+
+  - Two versions of each font: the `.woff`, `.woff2` files.
+  - A demo HTML file for each font — load these in your browser to see what the font will look like in different usage contexts.
+  - A `stylesheet.css` file, which contains the generated @font-face code you'll need.
+
+- To implement these fonts in your demo, follow these steps:
+  - Rename the unzipped directory to something easy and simple, like `fonts`.
+  - Open up the `stylesheet.css` file and copy the two `@font-face` rulesets into your `web-font-start.css` file — you need to put them at the very top, before any of your CSS, as the fonts need to be imported before you can use them on your site.
+  - Each of the `url()` functions points to a font file that we want to import into our CSS. We need to make sure the paths to the files are correct, so add `fonts/` to the start of each path (adjust as necessary).
+  - Now you can use these fonts in your font stacks, just like any web safe or default system font. For example:
+
+```
+@font-face {
+  font-family: "zantrokeregular";
+  src: url("fonts/zantroke-webfont.woff2") format("woff2"), url("fonts/zantroke-webfont.woff")
+      format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+```
+
+```
+font-family: "zantrokeregular", serif;
+```
+
+## Using an online font service
+
+- Online font services generally store and serve fonts for you so you don't have to worry about writing the `@font-face` code.
+- Instead, you generally just need to insert a simple line or two of code into your site to make everything work.
+- Examples include Adobe Fonts and Cloud.typography. Most of these services are subscription-based, with the notable exception of Google Fonts, a useful free service, especially for rapid testing work and writing demos.
+- Here's how to use Google fonts:
+  1. Go to Google Fonts.
+  2. Search for your favorite fonts or use the filters at the top of the page to display the kinds of fonts you want to choose and select a couple of fonts that you like.
+  3. To select a font family, click on the font preview and press the ⊕ button alongside the font.
+  4. When you've chosen the font families, press the View your selected families button in the top right corner of the page.
+  5. In the resulting screen, you first need to copy the line of HTML code shown and paste it into the head of your HTML file. Put it above the existing <link> element, so that the font is imported before you try to use it in your CSS.
+  6. You then need to copy the CSS declarations listed into your CSS as appropriate, to apply the custom fonts to your HTML.
+
+## @font-face in more detail
+
+- Let's explore that @font-face syntax generated for you by Fontsquirrel. This is what one of the rulesets looks like:
+
+```
+@font-face {
+  font-family: "zantrokeregular";
+  src: url("zantroke-webfont.woff2") format("woff2"), url("zantroke-webfont.woff")
+      format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+```
+
+- Let's go through to see what it does:
+
+  - `font-family`: This line specifies the name you want to refer to the font as. This can be anything you like as long as you use it consistently throughout your CSS.
+  - `src`: These lines specify the paths to the font files to be imported into your CSS (the `url` part), and the format of each font file (the `format` part). The latter part in each case is optional, but is useful to declare because it allows browsers to more quickly determine which font they can use. Multiple declarations can be listed, separated by commas. Because the browser will search through them according to the rules of the cascade, it's best to state your preferred formats, like WOFF2, at the beginning.
+  - `font-weight`/`font-style`: These lines specify what weight the font has and whether it is italic or not. If you are importing multiple weights of the same font, you can specify what their weight/style is and then use different values of `font-weight`/`font-style` to choose between them, rather than having to call all the different members of the font family different names.
+  - @font-face tip: define font-weight and font-style to keep your CSS simple by Roger Johansson shows what to do in more detail.
+
+- Instead of:
+
+```
+@font-face {
+	font-family: 'DroidSerifRegular';
+	src: url('DroidSerif-Regular-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'DroidSerifItalic';
+	src: url('DroidSerif-Italic-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'DroidSerifBold';
+	src: url('DroidSerif-Bold-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'DroidSerifBoldItalic';
+	src: url('DroidSerif-BoldItalic-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+```
+
+- Use:
+
+```
+@font-face {
+	font-family: 'DroidSerif';
+	src: url('DroidSerif-Regular-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'DroidSerif';
+	src: url('DroidSerif-Italic-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+@font-face {
+	font-family: 'DroidSerif';
+	src: url('DroidSerif-Bold-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'DroidSerif';
+	src: url('DroidSerif-BoldItalic-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+```
+
+## Variable fonts
+
+- There is a newer font technology available in browsers called variable fonts. These are fonts that allow many different variations of a typeface to be incorporated into a single file, rather than having a separate font file for every width, weight, or style.
+- They are somewhat advanced for our beginner's course, but if you fancy stretching yourself and looking into them, read our Variable fonts guide.
+-

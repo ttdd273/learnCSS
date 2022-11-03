@@ -1,0 +1,157 @@
+/* Importing fonts */
+@font-face {
+  font-family: "athletic";
+  src: url("./fonts/Athletic.TTF");
+}
+
+@font-face {
+  font-family: "avenue";
+  src: url("./fonts/avenue.otf");
+}
+
+/* General setup */
+
+html {
+  font-size: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+  min-width: 1000px;
+  max-width: 1400px;
+}
+
+/* Layout */
+
+section {
+  float: left;
+  width: 50%;
+}
+
+aside {
+  float: left;
+  width: 30%;
+}
+
+nav {
+  float: left;
+  width: 20%;
+}
+
+footer {
+  clear: both;
+}
+
+header,
+section,
+aside,
+nav,
+footer {
+  padding: 20px;
+}
+
+/* header and footer */
+
+header,
+footer {
+  border-top: 5px solid #a66;
+  border-bottom: 5px solid #a66;
+}
+
+/* WRITE YOUR CODE BELOW HERE */
+header,
+section h1,
+section h2,
+aside h2,
+footer {
+  font-family: "athletic";
+  font-size: 2.5rem;
+}
+
+h2 + p {
+  text-indent: 2rem;
+}
+
+section *,
+aside *,
+nav * {
+  font-family: "avenue";
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+  word-spacing: 0.5rem;
+}
+
+body {
+  line-height: 2rem;
+}
+
+header {
+  text-align: center;
+  letter-spacing: 1.5rem;
+}
+
+/* Link styling */
+a {
+  color: #a66;
+}
+
+a:link {
+}
+
+a:visited {
+}
+
+a:focus {
+  outline: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+a:active {
+  text-decoration: none;
+  background-color: #a66;
+  color: white;
+}
+
+a[href^="http"] {
+  background: url("external-link-52.png") no-repeat 100% 0;
+  background-size: 16px 16px;
+  padding-right: 19px;
+}
+
+/* Navigation */
+nav ul {
+  list-style-type: none;
+}
+
+nav li {
+  margin-bottom: 2rem;
+}
+
+nav li a {
+  display: inline-block;
+  text-decoration: none;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  line-height: 3;
+}
+
+nav a:link,
+nav a:visited,
+nav a:focus {
+  background: white;
+  border: 1px solid #a66;
+  padding: 1rem;
+}
+
+nav a:hover {
+  background-color: #a66;
+  color: white;
+}
