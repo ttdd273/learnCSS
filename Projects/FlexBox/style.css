@@ -1,0 +1,34 @@
+/* Task 1 */
+nav ul {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Task 2 */
+ul {
+  display: flex;
+}
+
+li {
+  flex: 1;
+}
+
+/* Task 3 */
+.parent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* No styling needed for child */
+
+/* Task 4 */
+ul {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li {
+  flex: 1;
+}
