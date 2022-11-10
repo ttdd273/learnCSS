@@ -1152,3 +1152,454 @@ footer {
 ```
 
 - Firefox Grid Inspector can show you all the grid lines over your layout.
+
+# Floats
+
+- Originally for floating images inside blocks of text, the `float` property became one of the most commonly used tools for creating multiple column layouts on webpages.
+- With the advent of flexbox and grid it's now returned to its original purpose, as this article explains.
+
+## The background of floats
+
+- The `float` property was introduced to allow web developers to implement simple layouts involving an image floating inside a column of text, with the text wrapping around the left or right of it.
+  - The kind of thing you might get in a newspaper layout.
+- But web developers quickly realized that you can float anything, not just images, so the use of float broadened, for example, to fun layout effects such as drop-caps.
+- Floats have commonly been used to create entire web site layouts featuring multiple columns of information floated so they sit alongside one another (the default behavior would be for the columns to sit below one another in the same order as they appear in the source).
+- There are newer, better layout techniques available. Using floats in this way should be regarded as a legacy technique.
+
+## A simple float example
+
+- Let's explore the use of floats. We'll start with a really simple example involving floating a block of text around an element. You can follow along by creating a new index.html file on your computer, filling it with a simple HTML template, and inserting the below code into it at the appropriate places. At the bottom of the section, you can see a live example of what the final code should look like.
+- If you save and refresh, you'll see something much like what you'd expect: the box is sitting above the text, in normal flow.
+
+### Floating the box
+
+- To float the box, add the float and margin-right properties to the .box rule:
+
+```
+.box {
+  float: left;
+  margin-right: 15px;
+  width: 150px;
+  height: 100px;
+  border-radius: 5px;
+  background-color: rgb(207, 232, 220);
+  padding: 1em;
+}
+```
+
+- Let's think about how the float works. The element with the float set on it (the `<div>` element in this case) is taken out of the normal layout flow of the document and stuck to the left-hand side of its parent container (`<body>`, in this case).
+- Any content that would come below the floated element in the normal layout flow will now wrap around it instead, filling up the space to the right-hand side of it as far up as the top of the floated element. There, it will stop.
+
+- Floating the content to the right has exactly the same effect, but in reverse: the floated element will stick to the right, and the content will wrap around it to the left.
+- Try changing the float value to `right` and replace `margin-right` with `margin-left` in the last ruleset to see what the result is.
+
+### Visualizing the float
+
+- While we can add a margin to the float to push the text away, we can't add a margin to the text to move it away from the float.
+- This is because a floated element is taken out of normal flow and the boxes of the following items actually run behind the float.
+- You can see this by making some changes to your example.
+
+- Add a class of `special` to the first paragraph of text, the one immediately following the floated box, then in your CSS add the following rules. These will give our following paragraph a background color.
+
+```
+.special {
+  background-color: rgb(79, 185, 227);
+  padding: 10px;
+  color: #fff;
+}
+```
+
+- To make the effect easier to see, change the `margin-left` on your float to `margin` so you get space all around the float. You'll be able to see the background on the paragraph running right underneath the floated box.
+
+- The line boxes of our following element have been shortened so the text runs around the float, but due to the float being removed from normal flow the box around the paragraph still remains full width.
+
+## Clearing floats
+
+- We've seen that a float is removed from normal flow and that other elements will display beside it.
+- If we want to stop the following element from moving up, we need to _clear_ it; this is achieved with the clear property.
+
+- In your HTML from the previous example, add a class of cleared to the second paragraph below the floated item. Then add the following to your CSS:
+
+```
+.cleared {
+  clear: left;
+}
+```
+
+- You should see that the second paragraph now clears the floated element and no longer comes up alongside it. The clear property accepts the following values:
+  - `left`: Clear items floated to the left.
+  - `right`: Clear items floated to the right.
+  - `both`: Clear any floated items, left or right.
+
+## Clearing boxes wrapped around a float
+
+- You now know how to clear something following a floated element, but let's see what happens if you have a tall float and a short paragraph, with a box wrapped around both elements.
+
+### The problem
+
+- Change your document so that the first paragraph and the floated box are jointly wrapped with a `<div>`, which has a class of wrapper.
+
+```
+<div class="wrapper">
+  <div class="box">Float</div>
+
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+    aliquam dolor, eu lacinia lorem placerat vulputate.
+  </p>
+</div>
+```
+
+- In your CSS, add the following rule for the .wrapper class and then reload the page:
+
+```
+.wrapper {
+  background-color: rgb(79, 185, 227);
+  padding: 10px;
+  color: #fff;
+}
+```
+
+- In addition, remove the original `.cleared` class:
+
+```
+.cleared {
+  clear: left;
+}
+```
+
+- You'll see that, just like in the example where we put a background color on the paragraph, the background color runs behind the float.
+
+- Once again, this is because the float has been taken out of normal flow.
+- Clearing the following element won't work as it did before.
+- This is a problem if you want the box to wrap jointly around the floated item as well as the text of the first paragraph that wraps around the float, while also having the following content cleared of the box.
+- There are three potential ways to deal with this, two of which work in all browsers — yet are slightly hacky — and a third, newer way that deals with this situation properly.
+
+### The clearfix hack
+
+- The way that this situation has traditionally been dealt with is to use something known as a "clearfix hack".
+- This involves first inserting some generated content after the box that contains both the float and content wrapped around it, then setting that generated content to clear both.
+
+- Add the following CSS to our example:
+
+```
+.wrapper::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+```
+
+- Now reload the page and the box should clear. This is essentially the same as if you had added an HTML element such as a `<div>` below the items and set it to `clear: both`.
+
+### Using overflow
+
+- An alternative method is to set the `overflow` property of the wrapper to a value other than `visible`.
+
+- Remove the clearfix CSS you added in the last section; instead add `overflow: auto` to the rules for wrapper. Once again, the box should clear.
+
+```
+.wrapper {
+  background-color: rgb(79, 185, 227);
+  padding: 10px;
+  color: #fff;
+  overflow: auto;
+}
+```
+
+- This example works by creating what's known as a **block formatting context** (BFC). This is like a mini layout inside your page, inside of which everything is contained.
+- This means our floated element is contained inside the BFC, and the background runs behind both items.
+- This will usually work; however, in certain cases you might find unwanted scrollbars or clipped shadows due to unintended consequences of using overflow.
+
+### display: flow-root
+
+- The modern way of solving this problem is to use the value `flow-root` of the `display` property.
+- This exists only to create a BFC without using hacks — there will be no unintended consequences when you use it.
+- Remove `overflow: auto` from your `.wrapper` rule and add `display: flow-root`. Assuming you have a supporting browser, the box will clear.
+
+```
+.wrapper {
+  background-color: rgb(79, 185, 227);
+  padding: 10px;
+  color: #fff;
+  display: flow-root;
+}
+```
+
+# Positioning
+
+- Positioning allows you to take elements out of normal document flow and make them behave differently, for example, by sitting on top of one another or by always remaining in the same place inside the browser viewport.
+- This article explains the different position values and how to use them.
+
+## Introducing positioning
+
+- Positioning allows us to produce interesting results by overriding normal document flow.
+- What if you want to slightly alter the position of some boxes from their default flow position to give a slightly quirky, distressed feel?
+  - Positioning is your tool.
+- Or what if you want to create a UI element that floats over the top of other parts of the page and/or always sits in the same place inside the browser window no matter how much the page is scrolled?
+
+  - Positioning makes such layout work possible.
+
+- There are a number of different types of positioning that you can put into effect on HTML elements.
+  - To make a specific type of positioning active on an element, we use the `position` property.
+
+## Static positioning
+
+- Static positioning is the default that every element gets.
+- It just means "put the element into its normal position in the document flow — nothing special to see here."
+
+- To see this (and get your example set up for future sections) first add a class of `positioned` to the second `<p>` in the HTML:
+
+```
+<p class="positioned">…</p>
+```
+
+- With the following CSS:
+
+```
+.positioned {
+  position: static;
+  background: yellow;
+}
+```
+
+- If you save and refresh, you'll see no difference at all, except for the updated background color of the 2nd paragraph.
+- This is fine — as we said before, static positioning is the default behavior!
+
+## Relative positioning
+
+- Relative positioning is the first position type we'll take a look at.
+- This is very similar to static positioning, except that once the positioned element has taken its place in the normal flow, you can then modify its final position, including making it overlap other elements on the page.
+- Go ahead and update the position declaration in your code:
+
+```
+position: relative;
+```
+
+- If you save and refresh at this stage, you won't see a change in the result at all. So how do you modify the element's position?
+- You need to use the `top`, `bottom`, `left`, and `right` properties.
+
+### Introducing top, bottom, left, and right
+
+- `top`, `bottom`, `left`, and `right` are used alongside `position` to specify exactly where to move the positioned element to. To try this out, add the following declarations to the `.positioned` rule in your CSS:
+
+```
+top: 30px;
+left: 30px;
+```
+
+- Ok, so this probably wasn't what you were expecting.
+- Why has it moved to the bottom and to the right if we specified top and left? This may seem counterintuitive.
+- You need to think of it as if there's an invisible force that pushes the specified side of the positioned box, moving it in the opposite direction. So, for example, if you specify `top: 30px`;, it's as if a force will push the top of the box, causing it to move downwards by 30px.
+
+## Absolute positioning
+
+- Absolute positioning brings very different results.
+
+### Setting position: absolute
+
+- Let's try changing the position declaration in your code as follows:
+
+```
+position: absolute;
+```
+
+- We will notice the following changes:
+
+- First of all, note that the gap where the positioned element should be in the document flow is no longer there — the first and third elements have closed together like it no longer exists!
+  - Well, in a way, this is true.
+- An absolutely positioned element no longer exists in the normal document flow.
+- Instead, it sits on its own layer separate from everything else.
+
+  - This is very useful: it means that we can create isolated UI features that don't interfere with the layout of other elements on the page.
+  - For example, popup information boxes, control menus, rollover panels, UI features that can be dragged and dropped anywhere on the page, and so on.
+
+- Second, notice that the position of the element has changed.
+- This is because `top`, `bottom`, `left`, and `right` behave in a different way with absolute positioning.
+- Rather than positioning the element based on its relative position within the normal document flow, they specify the distance the element should be from each of the containing element's sides.
+- So in this case, we are saying that the absolutely positioned element should sit 30px from the top of the "containing element" and 30px from the left. (In this case, the "containing element" is the **initial containing block**.)
+  - **Note**: You can use `top`, `bottom`, `left`, and `right` to resize elements if you need to. Try setting `top: 0; bottom: 0; left: 0; right: 0;` and `margin: 0`; on your positioned elements and see what happens! Put it back again afterwards…
+  - **Note**: Yes, margins still affect positioned elements. Margin collapsing doesn't, however.
+
+### Positioning contexts
+
+- Which element is the "containing element" of an absolutely positioned element?
+
+  - This is very much dependent on the position property of the ancestors of the positioned element (See Identifying the containing block).
+
+- If no ancestor elements have their position property explicitly defined, then by default all ancestor elements will have a static position.
+
+  - The result of this is the absolutely positioned element will be contained in the initial containing block.
+  - The initial containing block has the dimensions of the viewport and is also the block that contains the `<html>` element.
+  - In other words, the absolutely positioned element will be displayed outside of the `<html>` element and be positioned relative to the initial viewport.
+
+- The positioned element is nested inside the `<body>` in the HTML source, but in the final layout it's 30px away from the top and the left edges of the page.
+- We can change the **positioning context**, that is, which element the absolutely positioned element is positioned relative to.
+- This is done by setting positioning on one of the element's ancestors to one of the elements it's nested inside of (you can't position it relative to an element it's not nested inside of).
+- To see this, add the following declaration to your body rule:
+
+```
+position: relative;
+```
+
+- The positioned element now sits relative to the `<body>` element.
+- You should see that it's relative to the body, which is more to the right.
+
+### Introducing z-index
+
+- All this absolute positioning is good fun, but there's another feature we haven't considered yet.
+- When elements start to overlap, what determines which elements appear over others and which elements appear under others?
+- In the example we've seen so far, we only have one positioned element in the positioning context, and it appears on the top since positioned elements win over non-positioned elements.
+- What about when we have more than one?
+- Try adding the following to your CSS to make the first paragraph absolutely positioned too:
+
+```
+p:nth-of-type(1) {
+  position: absolute;
+  background: lime;
+  top: 10px;
+  right: 30px;
+}
+```
+
+- At this point you'll see the first paragraph colored lime, moved out of the document flow, and positioned a bit above from where it originally was.
+- It's also stacked below the original `.positioned` paragraph where the two overlap. This is because the `.positioned` paragraph is the second paragraph in the source order, and positioned elements later in the source order win over positioned elements earlier in the source order.
+
+- Can you change the stacking order?
+
+  - Yes, you can, by using the `z-index` property. "z-index" is a reference to the z-axis.
+  - You may recall from previous points in the course where we discussed web pages using horizontal (x-axis) and vertical (y-axis) coordinates to work out positioning for things like background images and drop shadow offsets.
+  - For languages that run left to right, (0,0) is at the top left of the page (or element), and the x- and y-axes run across to the right and down the page.
+
+- Web pages also have a z-axis: an imaginary line that runs from the surface of your screen towards your face (or whatever else you like to have in front of the screen).
+- `z-index` values affect where positioned elements sit on that axis; positive values move them higher up the stack, negative values move them lower down the stack. By default, positioned elements all have a `z-index` of `auto`, which is effectively 0.
+
+`To change the stacking order, try adding the following declaration to your `p:nth-of-type(1)` rule:
+
+```
+z-index: 1;
+```
+
+- You should now see the lime paragraph on top.
+
+- Note that z-index only accepts unitless index values; you can't specify that you want one element to be 23 pixels up the Z-axis — it doesn't work like that.
+- Higher values will go above lower values and it's up to you what values you use. Using values of 2 or 3 would give the same effect as values of 300 or 40000.
+
+## Fixed positioning
+
+- Let's now look at fixed positioning.
+- This works in exactly the same way as absolute positioning, with one key difference: whereas absolute positioning fixes an element in place relative to its nearest positioned ancestor (the initial containing block if there isn't one), **fixed positioning** _usually_ fixes an element in place relative to the visible portion of the viewport.
+
+  - (An exception to this occurs if one of the element's ancestors is a fixed containing block because its transform property has a value other than none.)
+  - This means that you can create useful UI items that are fixed in place, like persistent navigation menus that are always visible no matter how much the page scrolls.
+
+- Let's put together a simple example to show what we mean. First of all, delete the existing `p:nth-of-type(1)` and `.positioned` rules from your CSS.
+
+- Now update the body rule to remove the `position: relative;` declaration and add a fixed height, like so:
+
+```
+body {
+  width: 500px;
+  height: 1400px;
+  margin: 0 auto;
+}
+```
+
+- Now we're going to give the `<h1>` element position: fixed; and have it sit at the top of the viewport. Add the following rule to your CSS:
+
+```
+h1 {
+  position: fixed;
+  top: 0;
+  width: 500px;
+  margin-top: 0;
+  background: white;
+  padding: 10px;
+}
+```
+
+- The `top: 0;` is required to make it stick to the top of the screen.
+- We give the heading the same width as the content column and then a white background and some padding and margin so the content won't be visible underneath it.
+
+- If you save and refresh, you'll see a fun little effect of the heading staying fixed — the content appears to scroll up and disappear underneath it.
+- But notice how some of the content is initially clipped under the heading.
+- This is because the positioned heading no longer appears in the document flow, so the rest of the content moves up to the top.
+- We could improve this by moving the paragraphs all down a bit. We can do this by setting some top margin on the first paragraph. Add this now:
+
+```
+p:nth-of-type(1) {
+  margin-top: 60px;
+}
+```
+
+## Sticky positioning
+
+- There is another position value available called `position: sticky`, which is somewhat newer than the others.
+- This is basically a hybrid between relative and fixed position.
+- It allows a positioned element to act like it's relatively positioned until it's scrolled to a certain threshold (e.g., 10px from the top of the viewport), after which it becomes fixed.
+
+### Basic example
+
+- Sticky positioning can be used, for example, to cause a navigation bar to scroll with the page until a certain point and then stick to the top of the page.
+
+```
+.positioned {
+  position: sticky;
+  top: 30px;
+  left: 30px;
+}
+```
+
+### Scrolling index
+
+- An interesting and common use of `position: sticky` is to create a scrolling index page where different headings stick to the top of the page as they reach it.
+- The markup for such an example might look like so:
+
+```
+<h1>Sticky positioning</h1>
+
+<dl>
+  <dt>A</dt>
+  <dd>Apple</dd>
+  <dd>Ant</dd>
+  <dd>Altimeter</dd>
+  <dd>Airplane</dd>
+  <dt>B</dt>
+  <dd>Bird</dd>
+  <dd>Buzzard</dd>
+  <dd>Bee</dd>
+  <dd>Banana</dd>
+  <dd>Beanstalk</dd>
+  <dt>C</dt>
+  <dd>Calculator</dd>
+  <dd>Cane</dd>
+  <dd>Camera</dd>
+  <dd>Camel</dd>
+  <dt>D</dt>
+  <dd>Duck</dd>
+  <dd>Dime</dd>
+  <dd>Dipstick</dd>
+  <dd>Drone</dd>
+  <dt>E</dt>
+  <dd>Egg</dd>
+  <dd>Elephant</dd>
+  <dd>Egret</dd>
+</dl>
+```
+
+- The CSS might look as follows.
+- In normal flow the `<dt>` elements will scroll with the content.
+- When we add `position: sticky` to the `<dt>` element, along with a top value of 0, supporting browsers will stick the headings to the top of the viewport as they reach that position.
+- Each subsequent header will then replace the previous one as it scrolls up to that position.
+
+```
+dt {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  margin: 1em 0;
+}
+```
