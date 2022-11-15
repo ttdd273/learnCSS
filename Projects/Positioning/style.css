@@ -1,0 +1,15 @@
+/* Task 1 */
+.container {
+  position: relative;
+}
+
+.target {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* Task 2 */
+.sidebar {
+  position: fixed;
+}

@@ -1,0 +1,20 @@
+/* Task 1 */
+.container {
+  column-count: 3;
+}
+
+/* Task 2 */
+.container {
+  column-count: 3;
+  column-rule: 5px solid lightgrey;
+  margin: 10px;
+}
+
+/* Task 3 */
+.container {
+  column-count: 3;
+}
+
+.box {
+  column-span: all;
+}

@@ -1603,3 +1603,776 @@ dt {
   margin: 1em 0;
 }
 ```
+
+# Multiple-column layout
+
+- The multiple-column layout specification provides you with a method for laying content out in columns, as you might see in a newspaper. This article explains how to use this feature.
+
+## A basic example
+
+- Let's explore how to use multiple-column layout — often referred to as _multicol_.
+- We will work through the example, multicol starting.
+
+### A three column layout
+
+- Our starting point file contains some very simple HTML: a wrapper with a class of `container`, inside of which is a heading and some paragraphs.
+
+- The `<div>` with a class of container will become our multicol container.
+- We enable multicol by using one of two properties: `column-count` or `column-width`. The `column-count` property takes a number as its value and creates that number of columns.
+- If you add the following CSS to your stylesheet and reload the page, you'll get three columns:
+
+```
+.container {
+  column-count: 3;
+}
+```
+
+- The columns that you create have flexible widths — the browser works out how much space to assign each column.
+
+### Setting column-width
+
+- Change your CSS to use column-width as follows:
+
+```
+.container {
+  column-width: 200px;
+}
+```
+
+- The browser will now give you as many columns as it can of the size that you specify; any remaining space is then shared between the existing columns.
+- This means that you won't get exactly the width that you specify unless your container is exactly divisible by that width.
+
+## Styling the columns
+
+- The columns created by multicol cannot be styled individually.
+- There's no way to make one column bigger than other columns or to change the background or text color of a single column.
+- You have two opportunities to change the way that columns display:
+  - Changing the size of the gap between columns using the `column-gap`.
+  - Adding a rule between columns with `column-rule`.
+- Using your example above, change the size of the gap by adding a `column-gap` property.
+- You can play around with different values — the property accepts any length unit.
+
+- Now add a rule between the columns with `column-rule`.
+- In a similar way to the `border` property that you encountered in previous lessons, `column-rule` is a shorthand for `column-rule-color`, `column-rule-style`, and `column-rule-width`, and accepts the same values as `border`.
+
+```
+.container {
+  column-count: 3;
+  column-gap: 20px;
+  column-rule: 4px dotted rgb(79, 185, 227);
+}
+```
+
+- Using this, you will get columns with a blue dotted line between the columns
+
+- Something to take note of is that the rule doesn't take up any width of its own.
+- It lies across the gap you created with `column-gap`.
+- To make more space on either side of the rule, you'll need to increase the `column-gap` size.
+
+## Spanning columns
+
+- You can cause an element to span across all the columns.
+- In this case, the content breaks where the spanning element's introduced and then continues below the element, creating a new set of columns.
+- To cause an element to span all the columns, specify the value of `all` for the `column-span` property.
+- **Note**: It isn't possible to cause an element to span just some columns. The property can only have the values of `none` (which is the default) or `all`.
+
+## Columns and fragmentation
+
+- The content of a multi-column layout is fragmented.
+- It essentially behaves the same way as content behaves in paged media, such as when you print a webpage.
+- When you turn your content into a multicol container, it fragments into columns. In order for the content to do this, it must _break_.
+
+### Fragmented boxes
+
+- Sometimes, this breaking will happen in places that lead to a poor reading experience. In the example below, I have used multicol to lay out a series of boxes, each of which has a heading and some text inside. The heading becomes separated from the text if the columns fragment between the two.
+
+```
+<div class="container">
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>I am the heading</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla luctus
+      aliquam dolor, eu lacinia lorem placerat vulputate. Duis felis orci,
+      pulvinar id metus ut, rutrum luctus orci. Cras porttitor imperdiet nunc,
+      at ultricies tellus laoreet sit amet. Sed auctor cursus massa at porta.
+      Integer ligula ipsum, tristique sit amet orci vel, viverra egestas ligula.
+    </p>
+  </div>
+</div>
+```
+
+```
+.container {
+  column-width: 250px;
+  column-gap: 20px;
+}
+
+.card {
+  background-color: rgb(207, 232, 220);
+  border: 2px solid rgb(79, 185, 227);
+  padding: 10px;
+  margin: 0 0 1em 0;
+}
+```
+
+- You will see that when you reach the end of a page, the different boxes will actually be broken up into separate components rather than remaining as one continuous column.
+
+### Setting break-inside
+
+- To control this behavior, we can use properties from the CSS Fragmentation specification.
+- This specification gives us properties to control the breaking of content in multicol and in paged media.
+- For example, by adding the property `break-inside` with a value of `avoid` to the rules for `.card`. This is the container of the heading and text, so we don't want it fragmented.
+
+```
+.card {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  background-color: rgb(207, 232, 220);
+  border: 2px solid rgb(79, 185, 227);
+  padding: 10px;
+  margin: 0 0 1em 0;
+}
+```
+
+- The addition of this property causes the boxes to stay in one piece—they now do not _fragment_ across the columns.
+
+# Responsive Design
+
+- _Responsive web design_ (RWD) is a web design approach to make web pages that render well on all screen sizes and resolutions while ensuring good usability.
+- It is the way to design for a multi-device web.
+- In this article, we'll help you understand some techniques that can be used to master it.
+
+- HTML is fundamentally responsive, or fluid.
+- If you create a web page containing only HTML, with no CSS, and resize the window, the browser will automatically reflow the text to fit the viewport.
+
+- While the default responsive behavior may sound like no solution is needed, long lines of text displayed full screen on a wide monitor can be difficult to read.
+- If wide screen line length is reduced with CSS, such as by creating columns or adding significant padding, the site may look squashed for the user who narrows their browser window or opens the site on a mobile device.
+
+- Creating a non-resizable web page by setting a fixed width doesn't work either; that leads to scroll bars on narrow devices and too much empty space on wide screens.
+
+- Responsive web design, or RWD, is a design approach that addresses the range of devices and device sizes, enabling automatic adaption to the screen, whether the content is viewed on a tablet, phone, television, or watch.
+
+- Responsive web design isn't a separate technology — it is an approach.
+- It is a term used to describe a set of best practices used to create a layout that can respond to any device being used to view the content.
+
+- The term _responsive design_, coined by Ethan Marcotte in 2010, described using fluid grids, fluid images, and media queries to create responsive content, as discussed in Zoe Mickley Gillenwater's book Flexible Web Design.
+
+- At the time, the recommendation was to use CSS `float` for layout and media queries to query the browser width, creating layouts for different breakpoints.
+- Fluid images are set to not exceed the width of their container; they have their `max-width` property set to `100%`.
+- Fluid images scale down when their containing column narrow but do not grow larger than their intrinsic size when the column grows.
+- This enables an image to scale down to fit its content, rather than overflow it, but not grow larger and become pixelated if the container becomes wider than the image.
+
+- Modern CSS layout methods are inherently responsive, and, since the publication of Gillenwater's book and Marcotte's article, we have a multitude of features built into the web platform to make designing responsive sites easier.
+
+- The rest of this article will point you to the various web platform features you might want to use when creating a responsive site.
+
+## Media queries
+
+- Media queries allow us to run a series of tests (e.g. whether the user's screen is greater than a certain width, or a certain resolution) and apply CSS selectively to style the page appropriately for the user's needs.
+
+- For example, the following media query tests to see if the current web page is being displayed as screen media (therefore not a printed document) and the viewport is at least `80rem` wide. The CSS for the `.container` selector will only be applied if these two things are true.
+
+```
+@media screen and (min-width: 80rem) {
+  .container {
+    margin: 1em 2em;
+  }
+}
+```
+
+- You can add multiple media queries within a stylesheet, tweaking your whole layout or parts of it to best suit the various screen sizes.
+- The points at which a media query is introduced, and the layout changed, are known as **breakpoints**.
+
+- A common approach when using Media Queries is to create a simple single-column layout for narrow-screen devices (e.g. mobile phones), then check for wider screens and implement a multiple-column layout when you know that you have enough screen width to handle it.
+- Designing for mobile first is known as **mobile first** design.
+
+- If using breakpoints, best practices encourage defining media query breakpoints with _relative units_ rather than absolute sizes of an individual device.
+
+- There are different approaches to the styles defined within a media query block; ranging from using media queries to link style sheets based on browser size ranges to only including custom properties variables to store values associated with each breakpoint.
+
+- Media queries can help with RWD, but are not a requirement. Flexible grids, relative units, and minimum and maximum unit values can be used without queries.
+
+## Responsive layout technologies
+
+- Responsive sites are built on flexible grids, meaning you don't need to target every possible device size with pixel perfect layouts.
+
+- By using a flexible grid, you can change a feature or add in a breakpoint and change the design at the point where the content starts to look bad.
+
+  - For example, to ensure line lengths don't become unreadably long as the screen size increases you can use `columns`; if a box becomes squashed with two words on each line as it narrows you can set a breakpoint.
+
+- Several layout methods, including Multiple-column layout, Flexbox, and Grid are responsive by default.
+- They all assume that you are trying to create a flexible grid and give you easier ways to do so.
+
+### Multicol
+
+- With multicol, you specify a `column-count` to indicate the maximum number of columns you want your content to be split into.
+- The browser then works out the size of these, a size that will change according to the screen size.
+
+```
+.container {
+  column-count: 3;
+}
+```
+
+- If you instead specify a column-width, you are specifying a _minimum_ width.
+- The browser will create as many columns of that width as will comfortably fit into the container, then share out the remaining space between all the columns.
+- Therefore the number of columns will change according to how much space there is.
+
+```
+.container {
+  column-width: 10em;
+}
+```
+
+- You can use the `columns` shorthand to provide a maximum number of columns and a minimum column width.
+- This can ensure line lengths don't become unreadably long as the screen size increases or too narrow as the screen size decreases.
+
+### Flexbox
+
+- In Flexbox, flex items shrink or grow, distributing space between the items according to the space in their container.
+- By changing the values for `flex-grow` and `flex-shrink` you can indicate how you want the items to behave when they encounter more or less space around them.
+
+- In the example below the flex items will each take an equal amount of space in the flex container, using the shorthand of `flex: 1` as described in the layout topic Flexbox: Flexible sizing of flex items.
+
+```
+.container {
+display: flex;
+}
+
+.item {
+flex: 1;
+}
+```
+
+### CSS grid
+
+- In CSS Grid Layout the `fr` unit allows the distribution of available space across grid tracks.
+- The next example creates a grid container with three tracks sized at `1fr`.
+  - This will create three column tracks, each taking one part of the available space in the container.
+  - You can find out more about this approach to create a grid in the Learn Layout Grids topic, under Flexible grids with the fr unit.
+
+```
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+```
+
+## Responsive images
+
+- To ensure media is never larger than its responsive container, the following approach can be used:
+
+```
+img, picture, video {
+  max-width: 100%;
+}
+```
+
+- This scales media to ensure they never overflow their containers.
+- Using a single large image and scaling it down to fit small devices wastes bandwidth by downloading images larger that what is needed.
+
+- Responsive Images, using the `<picture>` element and the `<img>` `srcset` and `sizes` attributes enables serving images targeted to the user's viewport and the device's resolution.
+
+  - For example, you can include a square image for mobile, but show the same scene as a landscape image on desktop.
+
+- The `<picture>` element enables providing multiple sizes along with "hints" (metadata that describes the screen size and resolution the image is best suited for), and the browser will choose the most appropriate image for each device, ensuring that a user will download an image size appropriate for the device they are using.
+- Using `<picture>` along with `max-width` removes the need for sizing images with media queries.
+- It enables targeting images with different aspect ratios to different viewport sizes.
+
+- You can also _art direct_ images used at different sizes, thus providing a different crop or completely different image to different screen sizes.
+
+## Responsive typography
+
+- Responsive typography describes changing font sizes within media queries or using viewport units to reflect lesser or greater amounts of screen real estate.
+
+### Using media queries for responsive typography
+
+- In this example, we want to set our level 1 heading to be `4rem`, meaning it will be four times our base font size.
+- That's a really large heading!
+- We only want this jumbo heading on larger screen sizes, therefore we first create a smaller heading then use media queries to overwrite it with the larger size if we know that the user has a screen size of at least `1200px`.
+
+```
+html {
+  font-size: 1em;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+@media (min-width: 1200px) {
+  h1 {
+    font-size: 4rem;
+  }
+}
+```
+
+- We have edited our responsive grid example above to also include responsive type using the method outlined. You can see how the heading switches sizes as the layout goes to the two column version.
+
+- On mobile the heading is smaller, but on desktop, the heading is much larger.
+
+- As this approach to typography shows, you do not need to restrict media queries to only changing the layout of the page.
+- They can be used to tweak any element to make it more usable or attractive at alternate screen sizes.
+
+### Using viewport units for responsive typography
+
+- Viewport units `vw` can also be used to enable responsive typography, without the need for setting breakpoints with media queries.
+- `1vw` is equal to one percent of the viewport width, meaning that if you set your font size using `vw`, it will always relate to the size of the viewport.
+
+```
+h1 {
+  font-size: 6vw;
+}
+```
+
+- The problem with doing the above is that the user loses the ability to zoom any text set using the `vw` unit, as that text is always related to the size of the viewport.
+- **Therefore you should never set text using viewport units alone**.
+
+- There is a solution, and it involves using `calc()`.
+- If you add the `vw` unit to a value set using a fixed size such as `em`s or `rem`s then the text will still be zoomable.
+- Essentially, the `vw` unit adds on top of that zoomed value:
+
+```
+h1 {
+  font-size: calc(1.5rem + 3vw);
+}
+```
+
+- This means that we only need to specify the font size for the heading once, rather than set it up for mobile and redefine it in the media queries.
+- The font then gradually increases as you increase the size of the viewport.
+
+## The viewport meta tag
+
+- If you look at the HTML source of a responsive page, you will usually see the following `<meta>` tag in the `<head>` of the document.
+
+```
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+```
+
+- This viewport meta tag tells mobile browsers that they should set the width of the viewport to the device width, and scale the document to 100% of its intended size, which shows the document at the mobile-optimized size that you intended.
+
+- Why is this needed? Because mobile browsers tend to lie about their viewport width.
+
+- This meta tag exists because when smartphones first arrived, most sites were not mobile optimized.
+- The mobile browser would, therefore, set the viewport width to 980 pixels, render the page at that width, and show the result as a zoomed-out version of the desktop layout. Users could zoom in and pan around the website to view the bits they were interested in, but it looked bad.
+
+- By setting `width=device-width` you are overriding a mobile device's default, like Apple's default `width=980px`, with the actual width of the device.
+- Without it, your responsive design with breakpoints and media queries may not work as intended on mobile browsers. If you've got a narrow screen layout that kicks in at 480px viewport width or less, but the device is saying it is 980px wide, that user will not see your narrow screen layout.
+
+- **So you should _always_ include the viewport meta tag in the head of your documents**.
+
+## Summary
+
+- Responsive design refers to a site or application design that responds to the environment in which it is viewed. It encompasses a number of CSS and HTML features and techniques and is now essentially just how we build websites by default. Consider the sites that you visit on your phone — it is probably fairly unusual to come across a site that is the desktop version scaled down, or where you need to scroll sideways to find things. This is because the web has moved to this approach of designing responsively.
+
+- It has also become much easier to achieve responsive designs with the help of the layout methods you have learned in these lessons. If you are new to web development today you have many more tools at your disposal than in the early days of responsive design. It is therefore worth checking the age of any materials you are using. While the historical articles are still useful, modern use of CSS and HTML makes it far easier to create elegant and useful designs, no matter what device your visitor views the site with.
+
+# Beginner's guide to media queries
+
+- The **CSS Media Query** gives you a way to apply CSS only when the browser and device environment matches a rule that you specify, for example "viewport is wider than 480 pixels".
+- Media queries are a key part of responsive web design, as they allow you to create different layouts depending on the size of the viewport, but they can also be used to detect other things about the environment your site is running on, for example whether the user is using a touchscreen rather than a mouse.
+- In this lesson you will first learn about the syntax used in media queries, and then move on to use them in a working example showing how a simple design might be made responsive.
+
+## Media Query Basics
+
+- The simplest media query syntax looks like this:
+
+```
+@media media-type and (media-feature-rule) {
+  /* CSS rules go here */
+}
+```
+
+- It consists of:
+  - A media type, which tells the browser what kind of media this code is for (e.g. print, or screen).
+  - A media expression, which is a rule, or test that must be passed for the contained CSS to be applied.
+  - A set of CSS rules that will be applied if the test passes and the media type is correct.
+
+### Media types
+
+- The possible types of media you can specify are:
+  - `all`
+  - `print`
+  - `screen`
+- The following media query will only set the body to 12pt if the page is printed. It will not apply when the page is loaded in a browser.
+
+```
+@media print {
+  body {
+    font-size: 12pt;
+  }
+}
+```
+
+- **Note:** The media type here is different from the so called MIME type.
+- **Note:** There were a number of other media types defined in the Level 3 Media Queries specification; these have been deprecated and should be avoided.
+- **Note:** Media types are optional; if you do not indicate a media type in your media query, then the media query will default to being for all media types.
+
+### Media feature rules
+
+- After specifying the type, you can then target a media feature with a rule.
+
+#### Width and height
+
+- The feature we tend to detect most often in order to create responsive designs (and that has widespread browser support) is viewport width, and we can apply CSS if the viewport is above or below a certain width — or an exact width — using the `min-width`, `max-width`, and `width` media features.
+
+- These features are used to create layouts that respond to different screen sizes. For example, to change the body text color to red if the viewport is exactly 600 pixels, you would use the following media query.
+
+```
+@media screen and (width: 600px) {
+  body {
+    color: red;
+  }
+}
+```
+
+- The `width` (and `height`) media features can be used as ranges, and therefore be prefixed with `min-` or `max-` to indicate that the given value is a minimum, or a maximum.
+- For example, to make the color blue if the viewport is 600 pixels or narrower, use max-width:
+
+```
+@media screen and (max-width: 600px) {
+  body {
+  color: blue;
+  }
+}
+```
+
+- In practice, using minimum or maximum values is much more useful for responsive design so you will rarely see width or height used alone.
+
+- There are a number of other media features that you can test for, although some of the newer features introduced in Level 4 and 5 of the media queries specification have limited browser support.
+- Each feature is documented on MDN along with browser support information, and you can find a full list at Using Media Queries: Media Features.
+
+#### Orientation
+
+- One well-supported media feature is `orientation`, which allows us to test for portrait or landscape mode.
+- To change the body text color if the device is in landscape orientation, use the following media query.
+
+```
+@media (orientation: landscape) {
+  body {
+    color: rebeccapurple;
+  }
+}
+```
+
+- A standard desktop view has a landscape orientation, and a design that works well in this orientation may not work as well when viewed on a phone or tablet in portrait mode.
+- Testing for orientation can help you to create a layout which is optimized for devices in portrait mode.
+
+#### Use of pointing devices
+
+- As part of the Level 4 specification, the `hover` media feature was introduced.
+- This feature means you can test if the user has the ability to hover over an element, which essentially means they are using some kind of pointing device; touchscreen and keyboard navigation does not hover.
+
+```
+@media (hover: hover) {
+  body {
+    color: rebeccapurple;
+  }
+}
+```
+
+- If we know the user cannot hover, we could display some interactive features by default.
+- For users who can hover, we might choose to make them available when a link is hovered over.
+
+- Also in Level 4 is the pointer media feature.
+- This takes three possible values, none, fine and coarse. A fine pointer is something like a mouse or trackpad.
+- It enables the user to precisely target a small area. A coarse pointer is your finger on a touchscreen. The value none means the user has no pointing device; perhaps they are navigating with the keyboard only or with voice commands.
+
+- Using pointer can help you to design better interfaces that respond to the type of interaction a user is having with a screen.
+- For example, you could create larger hit areas if you know that the user is interacting with the device as a touchscreen.
+
+## More complex media queries
+
+- With all of the different possible media queries, you may want to combine them, or create lists of queries — any of which could be matched.
+
+### "and" logic in media queries
+
+- To combine media features you can use and in much the same way as we have used and above to combine a media type and feature.
+- For example, we might want to test for a `min-width` and `orientation`.
+- The body text will only be blue if the viewport is at least 600 pixels wide and the device is in landscape mode.
+
+```
+@media screen and (min-width: 600px) and (orientation: landscape) {
+  body{
+    color: blue;
+  }
+}
+```
+
+### "or" logic in media queries
+
+- If you have a set of queries, any of which could match, then you can comma separate these queries. In the below example the text will be blue if the viewport is at least 600 pixels wide OR the device is in landscape orientation. If either of these things are true the query matches.
+
+```
+@media screen and (min-width: 600px), screen and (orientation: landscape) {
+  body {
+    color: blue;
+  }
+}
+```
+
+### "not" logic in media queries
+
+- You can negate an entire media query by using the `not` operator. This reverses the meaning of the entire media query. Therefore in this next example the text will only be blue if the orientation is portrait.
+
+```
+@media not all and (orientation: landscape) {
+  body {
+    color: blue;
+  }
+}
+```
+
+## How to choose breakpoints
+
+- In the early days of responsive design, many designers would attempt to target very specific screen sizes.
+- Lists of the sizes of the screens of popular phones and tablets were published in order that designs could be created to neatly match those viewports.
+
+- There are now far too many devices, with a huge variety of sizes, to make that feasible.
+- This means that instead of targeting specific sizes for all designs, a better approach is to change the design at the size where the content starts to break in some way.
+- Perhaps the line lengths become far too long, or a boxed out sidebar gets squashed and hard to read.
+- That's the point at which you want to use a media query to change the design to a better one for the space you have available.
+- This approach means that it doesn't matter what the exact dimensions are of the device being used, every range is catered for.
+- The points at which a media query is introduced are known as **breakpoints**.
+
+- The Responsive Design Mode in Firefox DevTools is very useful for working out where these breakpoints should go. You can easily make the viewport smaller and larger to see where the content would be improved by adding a media query and tweaking the design.
+
+## Active learning: mobile first responsive design
+
+- Broadly, you can take two approaches to a responsive design.
+- You can start with your desktop or widest view and then add breakpoints to move things around as the viewport becomes smaller, or you can start with the smallest view and add layout as the viewport becomes larger.
+- This second approach is described as **mobile first** responsive design and is quite often the best approach to follow.
+
+- The view for the very smallest devices is quite often a simple single column of content, much as it appears in normal flow.
+- This means that you probably don't need to do a lot of layout for small devices — order your source well and you will have a readable layout by default.
+
+- The below walkthrough takes you through this approach with a very simple layout. In a production site you are likely to have more things to adjust within your media queries, however the approach would be exactly the same.
+
+### Walkthrough: a simple mobile-first layout
+
+- Our starting point is an HTML document with some CSS applied to add background colors to the various parts of the layout.
+
+```
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 90%;
+  margin: 2em auto;
+  font: 1em/1.3 Arial, Helvetica, sans-serif;
+}
+
+a:link,
+a:visited {
+  color: #333;
+}
+
+nav ul,
+aside ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav a:link,
+nav a:visited {
+  background-color: rgba(207, 232, 220, 0.2);
+  border: 2px solid rgb(79, 185, 227);
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+nav a:hover {
+  background-color: rgba(207, 232, 220, 0.7);
+}
+
+.related {
+  background-color: rgba(79, 185, 227, 0.3);
+  border: 1px solid rgb(79, 185, 227);
+  padding: 10px;
+}
+
+.sidebar {
+  background-color: rgba(207, 232, 220, 0.5);
+  padding: 10px;
+}
+
+article {
+  margin-bottom: 1em;
+}
+```
+
+- We've made no layout changes, however the source of the document is ordered in a way that makes the content readable. This is an important first step and one which ensures that if the content were to be read out by a screen reader, it would be understandable.
+
+```
+<body>
+  <div class="wrapper">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="">About</a></li>
+          <li><a href="">Contact</a></li>
+          <li><a href="">Meet the team</a></li>
+          <li><a href="">Blog</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <article>
+        <div class="content">
+          <h1>Veggies!</h1>
+          <p>…</p>
+        </div>
+        <aside class="related">
+          <p>…</p>
+        </aside>
+      </article>
+
+      <aside class="sidebar">
+        <h2>External vegetable-based links</h2>
+        <ul>
+          <li>…</li>
+        </ul>
+      </aside>
+    </main>
+
+    <footer><p>&copy;2019</p></footer>
+  </div>
+</body>
+```
+
+- This simple layout also works well on mobile. If we view the layout in Responsive Design Mode in DevTools we can see that it works pretty well as a straightforward mobile view of the site.
+
+- From this point, start to drag the Responsive Design Mode view wider until you can see that the line lengths are becoming quite long, and we have space for the navigation to display in a horizontal line. This is where we'll add our first media query. We'll use ems, as this will mean that if the user has increased their text size, the breakpoint will happen at a similar line-length but wider viewport, than someone with a smaller text size.
+
+- Add the media query to turn it into two columns if the screen size gets larger.
+
+- Let's continue to expand the width until we feel there is enough room for the sidebar to also form a new column. Inside a media query we'll make the main element into a two column grid. We then need to remove the margin-bottom on the article in order that the two sidebars align with each other, and we'll add a border to the top of the footer. Typically these small tweaks are the kind of thing you will do to make the design look good at each breakpoint.
+
+## Do you really need a media query?
+
+- Flexbox, Grid, and multi-column layout all give you ways to create flexible and even responsive components without the need for a media query.
+- It's always worth considering whether these layout methods can achieve what you want without adding media queries.
+- For example, you might want a set of cards that are at least 200 pixels wide, with as many of these 200 pixels as will fit into the main article. This can be achieved with grid layout, using no media queries at all.
+
+This could be achieved using the following:
+
+```
+<ul class="grid">
+  <li>
+    <h2>Card 1</h2>
+    <p>…</p>
+  </li>
+  <li>
+    <h2>Card 2</h2>
+    <p>…</p>
+  </li>
+  <li>
+    <h2>Card 3</h2>
+    <p>…</p>
+  </li>
+  <li>
+    <h2>Card 4</h2>
+    <p>…</p>
+  </li>
+  <li>
+    <h2>Card 5</h2>
+    <p>…</p>
+  </li>
+</ul>
+```
+
+- With the following CSS:
+
+```
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.grid li {
+  border: 1px solid #666;
+  padding: 10px;
+}
+```
+
+- With the example open in your browser, make the screen wider and narrower to see the number of column tracks change. The nice thing about this method is that grid is not looking at the viewport width, but the width it has available for this component. It might seem strange to wrap up a section about media queries with a suggestion that you might not need one at all! However, in practice you will find that good use of modern layout methods, enhanced with media queries, will give the best results.
+
+# Legacy layout method
+
+- Grid systems are a very common feature used in CSS layouts, and before CSS Grid Layout they tended to be implemented using floats or other layout features.
+- You imagine your layout as a set number of columns (e.g. 4, 6, or 12), and then fit your content columns inside these imaginary columns. In this article we'll explore how these older methods work, in order that you understand how they were used if you work on an older project.
+
+## Layout and grid systems before CSS Grid Layout
